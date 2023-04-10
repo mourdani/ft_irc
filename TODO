@@ -1,0 +1,12 @@
+IRC Command:
+
+-NICK
+-USER
+-QUIT
+
+-JOIN
+-PART
+-LIST
+
+-PRIVMSG
+-WHO
