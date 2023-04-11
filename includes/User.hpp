@@ -14,27 +14,16 @@ private:
     std::string _hostname;
     bool _operator;
 
-
     User();
 
 public:
-    User(const std::string name, int grade);
+    User(std::string hostname);
 
     User(const User &user);
 
     virtual ~User();
 
-    void increment(int n);
-
-    void decrement(int n);
-
-    std::string getName() const;
-
-    int getGrade() const;
-
     User &operator=(const User &user);
-
-
 };
 
 std::ostream &operator<<(std::ostream &outFile, User const &user);
