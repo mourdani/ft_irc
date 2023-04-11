@@ -1,89 +1,98 @@
+#include <cstring>
+#include <unistd.h>
+
+
+
 #include <iostream>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <sys/select.h>
+#include <sys/types.h>
+#include <netdb.h>
 #include <errno.h>
 
-class Endpoint {
-public:
-    Endpoint(const std::string& ip, int port) : ip(ip), port(port) {}
-    std::string ipv6;
-    std::string ip;
-    int port;
-};
-int socket_ipv4() {
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd == -1) {
-		std::cerr << "Failed to create socket: " << std::endl;
-		return 1;
-	}
+int create_socket() {
+    struct addrinfo hints;
+    struct addrinfo *result, *rp;
+    int sfd, s;
+    struct sockaddr_storage peer_addr;
+    socklen_t peer_addr_len;
+    ssize_t nread;
+    char buf[BUFSIZ];
 
-    struct sockaddr_in sock;
-    sock.sin_family = AF_INET;
-    sock.sin_addr.s_addr = htonl(INADDR_ANY);
-    sock.sin_port = htons(6667);
+    memset(&hints, 0, sizeof(struct addrinfo));
 
-    if (bind(sockfd, (struct sockaddr*)&sock, sizeof(sock)) == -1) {
-    std::cerr << "Failed to bind socket: " << std::endl;
-    return 1;
+    hints.ai_family = AF_INET6;  // AD_UNSPEC;     /* Allow IPv4 or IPv6 */   
+    hints.ai_socktype = SOCK_STREAM; /* Stream socket */
+    hints.ai_flags = AI_PASSIVE;    /* For wildcard IP address */
+    hints.ai_protocol = 0;          /* Any protocol */
+    hints.ai_canonname = NULL;
+    hints.ai_addr = NULL;
+    hints.ai_next = NULL;
+
+    s = getaddrinfo(NULL, "6667", &hints, &result);
+    if (s != 0) {
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(s));
+        exit(EXIT_FAILURE);
     }
-    
-    std::cout << "Socket bound to " << inet_ntoa(sock.sin_addr) << ":" << ntohs(sock.sin_port) << std::endl;
-    
-    listen(sockfd, 5); // listen for incoming connections
+    for (rp = result; rp != NULL; rp = rp->ai_next) {
+        sfd = socket(rp->ai_family, rp->ai_socktype,
+                rp->ai_protocol);
+        if (sfd == -1)
+            continue;
+
+        if (bind(sfd, rp->ai_addr, rp->ai_addrlen) == 0)
+        {
+            std::cout << "Socket bound to " << (rp->ai_family == AF_INET6 ? "IPv6" : "IPv4") << " address." << std::endl;
+            break;                  /* Success */
+        }
+
+        close(sfd);
+    }
+
+    if (rp == NULL) {               /* No address succeeded */
+        fprintf(stderr, "Could not bind\n");
+        exit(EXIT_FAILURE);
+    }
+
+    freeaddrinfo(result);           /* No longer needed */
+
+    if (listen(sfd, 5) == -1) {
+        perror("listen");
+        exit(EXIT_FAILURE);
+    }
+
     std::cout << "Listening for incoming connections..." << std::endl;
-    select(sockfd, NULL, NULL, NULL, NULL); // wait for incoming connections
-    struct sockaddr_in remote_addr;
-    socklen_t remote_addr_len = sizeof(remote_addr);
-    int client_sockfd = accept(sockfd, (struct sockaddr*)&remote_addr, &remote_addr_len);
-    if (client_sockfd == -1) {
-    	std::cerr << "Failed to accept connection: " << std::endl;
-    	return 1;
-    }
-    
-    std::cout << "Connection accepted from " << inet_ntoa(remote_addr.sin_addr) << ":" << ntohs(remote_addr.sin_port) << std::endl;
-    
-    return 0;
-}
 
-int socket_ipv6() {
-    int sock6fd = socket(AF_INET6, SOCK_STREAM, 0);
-    if (sock6fd == -1) {
-        std::cerr << "Failed to create socket: " << std::endl;
-        return 1;
+    while (1) {
+        peer_addr_len = sizeof(struct sockaddr_storage);
+        int client_sockfd = accept(sfd, (struct sockaddr *) &peer_addr, &peer_addr_len);
+        if (client_sockfd == -1) {
+            perror("accept");
+            continue;
+        }
+
+        char remote_addr_str[INET6_ADDRSTRLEN];
+        void *addr_ptr;
+        if (peer_addr.ss_family == AF_INET) {
+            addr_ptr = &((struct sockaddr_in *) &peer_addr)->sin_addr;
+        } else { // AF_INET6
+            addr_ptr = &((struct sockaddr_in6 *) &peer_addr)->sin6_addr;
+        }
+        inet_ntop(peer_addr.ss_family, addr_ptr, remote_addr_str, sizeof(remote_addr_str));
+        std::cout << "Connection accepted from " << remote_addr_str << std::endl;
+
+        close(client_sockfd);
     }
 
-    
-    struct sockaddr_in6 sock6;
-    sock6.sin6_family = AF_INET6;
-    sock6.sin6_addr = IN6ADDR_ANY_INIT;// any local address
-    sock6.sin6_port = htons(6667); // local port for TCP
-
-    if (bind(sock6fd, (struct sockaddr*)&sock6, sizeof(sock6)) == -1) {
-		std::cerr << "Failed to bind socket: " << std::endl;
-		return 1;
-    }
-    std::cout << "Socket bound to " << inet_ntop(AF_INET6, &sock6.sin6_addr, NULL, 0) << ":" << ntohs(sock6.sin6_port) << std::endl;
-//
-//    listen(sock6fd, 5); // listen for incoming connections
-//    // wait for incoming connections
-//    std::cout << "Listening for incoming connections..." << std::endl;
-//    select(sock6fd, NULL, NULL, NULL, NULL);
-//    struct sockaddr_in6 remote_addr;
-//    socklen_t remote_addr_len = sizeof(remote_addr);
-//    int client_sockfd = accept(sock6fd, (struct sockaddr*)&remote_addr, &remote_addr_len);
-//    if (client_sockfd == -1) {
-//	    std::cerr << "Failed to accept connection: " << std::endl;
-//	    return 1;
-//	}
-//    // connection accepted
-//    std::cout << "Connection accepted from " << inet_ntop(AF_INET6, &remote_addr.sin6_addr, NULL, 0) << ":" << ntohs(remote_addr.sin6_port) << std::endl;
-//
     return 0;
 }
 
 int main() {
-    socket_ipv4();
+    create_socket();
+    // use "nc -6 localhost 6667" to test with ipv6
+    // use "nc localhost 6667" to test with ipv4
+
     return 0;
 }
-
