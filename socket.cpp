@@ -5,7 +5,7 @@ int Server::init() {
     int socketfd;
 
     struct addrinfo hints;
-    hints.ai_family = AF_UNSPEC;  //	    /* Allow IPv4 or IPv6 */   
+    hints.ai_family = AF_INET6;		    /* Allow IPv6 */
     hints.ai_socktype = SOCK_STREAM;		    /* Stream socket */
     hints.ai_flags = AI_PASSIVE;		    /* For wildcard IP address */
 

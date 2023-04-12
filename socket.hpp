@@ -13,7 +13,7 @@
 class Server {
 public:
 	Server();
-	Server(int port) : port(port) {};
+	Server(int port) : port(port){};
 	~Server() {};
 	Server(const Server& other);
 	Server& operator=(const Server& other);
@@ -22,8 +22,7 @@ public:
 
 private:
 	int port;
-	int ipv4;
-	int ipv6;
+	int ipv;
 };
 
 #endif
