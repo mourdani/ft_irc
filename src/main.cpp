@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include "../includes/data.hpp"
+#include "socket.hpp"
 #include <stdlib.h>
 
 int exit_error(std::string error)
@@ -28,6 +29,9 @@ int main(int ac, char **av) {
 
     data.password = av[2];
     data.port = port;
+
+    Server server(6667);
+    server.init();
 
     return 1;
 }

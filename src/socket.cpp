@@ -62,10 +62,3 @@ int Server::init() {
 
 }
 
-int main() {
-    Server server(6667);
-    server.init();
-    // use "nc -6 localhost 6667" to test with ipv6
-    // use "nc localhost 6667" to test with ipv4
-    return 0;
-}
