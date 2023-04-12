@@ -14,9 +14,10 @@ struct irc_data { // This structure is named "myDataType"
     std::string password;
     int port;
     std::map<std::string, User> users;
+    std::map<std::string, Canal> canals;
 };
 
-bool	nickname_exist(irc_data data, std::string nickname);
+bool	user_exists(irc_data data, std::string nickname);
 bool	canal_exist(irc_data data, std::string canal);
 bool	add_user(irc_data data, User user);
 bool	add_canal(irc_data data, User user);

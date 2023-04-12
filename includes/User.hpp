@@ -21,6 +21,22 @@ public:
 
     User(const User &user);
 
+    const std::string &getNickname() const;
+
+    void setNickname(const std::string &nickname);
+
+    const std::string &getRealname() const;
+
+    void setRealname(const std::string &realname);
+
+    const std::string &getHostname() const;
+
+    void setHostname(const std::string &hostname);
+
+    bool isOperator() const;
+
+    void setOperator(bool);
+
     virtual ~User();
 
     User &operator=(const User &user);

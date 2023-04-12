@@ -25,3 +25,11 @@ Canal &Canal::operator=(const Canal &canal) {
 
     return *this;
 }
+
+const std::string &Canal::getName() const {
+    return _name;
+}
+
+void Canal::setName(const std::string &name) {
+    _name = name;
+}

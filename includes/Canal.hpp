@@ -21,6 +21,10 @@ public:
 
     Canal(const Canal &canal);
 
+    const std::string &getName() const;
+
+    void setName(const std::string &name);
+
     virtual ~Canal();
 
     Canal &operator=(const Canal &canal);

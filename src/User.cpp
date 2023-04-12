@@ -27,3 +27,35 @@ User &User::operator=(const User &user) {
 User::User(const User &user) {
     *this = user;
 }
+
+const std::string &User::getNickname() const {
+    return _nickname;
+}
+
+void User::setNickname(const std::string &nickname) {
+    _nickname = nickname;
+}
+
+const std::string &User::getRealname() const {
+    return _realname;
+}
+
+void User::setRealname(const std::string &realname) {
+    _realname = realname;
+}
+
+const std::string &User::getHostname() const {
+    return _hostname;
+}
+
+void User::setHostname(const std::string &hostname) {
+    _hostname = hostname;
+}
+
+bool User::isOperator() const {
+    return _operator;
+}
+
+void User::setOperator(bool op) {
+    _operator = op;
+}
