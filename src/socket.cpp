@@ -1,4 +1,4 @@
-#include "socket.hpp"
+#include "../includes/socket.hpp"
 
 int Server::init() {
     struct addrinfo *result;
@@ -9,10 +9,16 @@ int Server::init() {
     hints.ai_socktype = SOCK_STREAM;		    /* Stream socket */
     hints.ai_flags = AI_PASSIVE;		    /* For wildcard IP address */
 
-    const char *port_str = std::to_string(this->port).c_str();
-    if (getaddrinfo(NULL, port_str, &hints, &result) != 0) {
+    // port to char*
+    std::stringstream ss;
+    ss << port;
+    std::string port_str = ss.str();
+    const char *port_char = port_str.c_str();
+    
+    try {
+    if (getaddrinfo(NULL, port_char, &hints, &result) != 0) {
 	std::cerr << "Failed to get address information." << std::endl;
-        exit(EXIT_FAILURE);
+        throw std::exception();
     }
 
     while (result != NULL) {
@@ -33,12 +39,16 @@ int Server::init() {
 
     if (result == NULL) {             
         	std::cerr << "Could not bind" << std::endl;
-        	exit(EXIT_FAILURE);
+                throw std::exception();
     }
 
     if (listen(socketfd, 5) == -1) {
         std::cerr << "Failed to listen" << std::endl;
-        exit(EXIT_FAILURE);
+        throw std::exception();
+    }
+    } catch (std::exception &e) {
+        std::cerr << "Failed to initialize server" << std::endl;
+        return 1;
     }
 
     std::cout << "Listening for incoming connections..." << std::endl;
@@ -62,3 +72,8 @@ int Server::init() {
 
 }
 
+//int main() {
+//    Server server("6667");
+//    server.init();
+//    return 0;
+//}
