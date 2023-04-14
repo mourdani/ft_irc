@@ -30,7 +30,7 @@ int main(int ac, char **av) {
     data.password = av[2];
     data.port = port;
 
-    Server server(6667);
+    Server server(data.port);
     server.init();
 
     return 1;

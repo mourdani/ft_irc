@@ -2,6 +2,7 @@
 #define SOCKET_HPP
 
 #include <iostream>
+#include <sstream>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -22,7 +23,6 @@ public:
 
 private:
 	int port;
-	int ipv;
 };
 
 #endif
