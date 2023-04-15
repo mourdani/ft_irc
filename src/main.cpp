@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 #include "../includes/data.hpp"
-#include "socket.hpp"
+#include "../includes/Server.hpp"
 #include <stdlib.h>
 
 int exit_error(std::string error)
@@ -31,6 +31,7 @@ int main(int ac, char **av) {
 
     Server server(data.port);
     server.init();
+    server.run();
 
     return 1;
 }
