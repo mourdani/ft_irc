@@ -10,6 +10,12 @@
 #include <sys/types.h>
 #include <netdb.h>
 #include <errno.h>
+#include <poll.h>
+#include <unistd.h>
+#include <cstring>
+
+#define MAX_CLIENTS 5
+
 
 class Server {
 public:
