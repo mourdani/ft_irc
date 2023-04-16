@@ -17,14 +17,16 @@
 #include <map>
 #include "User.hpp"
 #include "Canal.hpp"
+#include "colors.hpp"
 
-#define MAX_CLIENTS 5
+#define MAX_CLIENTS 50
+#define MAX_CANALS 5
 
 
 class Server {
 public:
 	Server();
-	Server(int port) : port(port){};
+	Server(int port, std::string password) : port(port), password(password) {};
 	~Server() {close(socketfd);};
 	Server(const Server& other);
 	Server& operator=(const Server& other);
@@ -39,12 +41,13 @@ public:
 	User*	get_user(std::string hostname);
 	Canal*	get_canal(std::string canal);
 
+
 private:
 	int port;
-	int password;
+	std::string password;
 	int socketfd;
 	std::map<std::string, User> users;
-    	std::map<std::string, Canal> canals;
+	std::map<std::string, Canal> canals;
 };
 
 #endif

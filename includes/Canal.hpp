@@ -14,9 +14,9 @@ private:
     std::string _name;
     std::vector<std::string> _users; //hostname of user
 
-    Canal();
 
 public:
+    Canal();
     Canal(std::string name);
 
     Canal(const Canal &canal);

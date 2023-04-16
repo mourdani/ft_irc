@@ -13,7 +13,6 @@ private:
     std::string _realname;
     std::string _hostname;
     bool _operator;
-
     User();
 
 public:
