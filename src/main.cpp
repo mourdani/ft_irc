@@ -14,7 +14,6 @@ int main(int ac, char **av) {
     if (ac != 3)
         return exit_error("Usage : ircserv <port> <password>");
 
-    irc_data data;
 
     std::string port_str = av[1];
 
@@ -26,10 +25,7 @@ int main(int ac, char **av) {
     if (port <= 0 || port > 65535)
         return exit_error("Error : port outside [0, 65535]");
 
-    data.password = av[2];
-    data.port = port;
-
-    Server server(data.port);
+    Server server(port, av[2]);
     server.init();
     server.run();
 

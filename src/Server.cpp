@@ -32,7 +32,8 @@ void Server::init() {
             }
 
             if (bind(this->socketfd, result->ai_addr, result->ai_addrlen) == 0) {
-                std::cout << "Server listening on port " << port << std::endl;
+                std::cout << "Server listening on port " \
+                    << GREEN << port << RESET << std::endl;
                 break;
             }
 
@@ -70,23 +71,58 @@ void Server::run() {
         }
         
         if (fds[0].revents & POLLIN) {
-            std::cout << "New client" << std::endl;
-            fds[nfds].fd = accept(this->socketfd, NULL, NULL);
+             if (fds[0].revents & POLLIN) {
+            struct sockaddr_in client_addr;
+            socklen_t client_len = sizeof(client_addr);
+            int client_fd = accept(this->socketfd, (struct sockaddr*)&client_addr, &client_len);
+
+            if (client_fd < 0) {
+                std::cerr << "Accept failed" << std::endl;
+                continue;
+            }
+
+            fds[nfds].fd = client_fd;
             fds[nfds].events = POLLIN;
             nfds++;
+            /*
+             *
+             * ADD USER OBJECT HERE
+             *
+             *
+            */
+
+            // Get client's hostname
+            char host[NI_MAXHOST];
+            char service[NI_MAXSERV];
+            memset(host, 0, NI_MAXHOST);
+            memset(service, 0, NI_MAXSERV);
+
+            int result = getnameinfo((struct sockaddr*)&client_addr, client_len, host, NI_MAXHOST, service, NI_MAXSERV, 0);
+            if (result) {
+                std::cout << host << " connected on port " << service << std::endl;
+            } else {
+                inet_ntop(AF_INET, &client_addr.sin_addr, host, NI_MAXHOST);
+                std::cout << host << " connected on port " << ntohs(client_addr.sin_port) << std::endl;
+            }
+
+            std::string msg = " Welcome to the IRC server\r \n";
+            write(client_fd, msg.c_str(), msg.length());
+            }
         }
 
         for (int i = 1; i < nfds; i++) {
             if (fds[i].revents & POLLIN) {
                 char buf[1024];
-                int len = read(fds[i].fd, buf, 1024);
+                memset(buf, 0, 1024);
+                int len = recv(fds[i].fd, buf, 1024, MSG_DONTWAIT);
                 if (len == 0) {
                     std::cout << "Client " << i << " disconnected" << std::endl;
                     close(fds[i].fd);
                     fds[i].fd = -1;
                     continue;
                 }
-                std::cout << "Client " << i << " sent: " << buf << std::endl;
+                std::cout << "Client " << i << " sent: " << buf;
+                memset(buf, 0, 1024);
             }
         }
 
