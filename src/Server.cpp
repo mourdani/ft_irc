@@ -6,7 +6,7 @@ void Server::init() {
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints)); // Initialize hints struct to zero
 // 
-    hints.ai_family = AF_INET6;       /* Allow IPv6 */
+    hints.ai_family = AF_INET;       /* Allow IPv6 */
     hints.ai_socktype = SOCK_STREAM;  /* Stream socket */
     hints.ai_flags = AI_PASSIVE;      /* For wildcard IP address */
 
@@ -70,8 +70,7 @@ void Server::run() {
             break;
         }
         
-        if (fds[0].revents & POLLIN) {
-             if (fds[0].revents & POLLIN) {
+        if (fds[0].revents & POLLIN) { // New connection
             struct sockaddr_in client_addr;
             socklen_t client_len = sizeof(client_addr);
             int client_fd = accept(this->socketfd, (struct sockaddr*)&client_addr, &client_len);
@@ -105,9 +104,8 @@ void Server::run() {
                 std::cout << host << " connected on port " << ntohs(client_addr.sin_port) << std::endl;
             }
 
-            std::string msg = " Welcome to the IRC server\r \n";
+            std::string msg = ":localhost 001 senor :Welcome to the server Johnny\n";
             write(client_fd, msg.c_str(), msg.length());
-            }
         }
 
         for (int i = 1; i < nfds; i++) {
@@ -126,7 +124,7 @@ void Server::run() {
             }
         }
 
-        for (int i = 1; i < nfds; i++) {
+        for (int i = 1; i < nfds; i++) { // Remove disconnected clients from fds
             if (fds[i].fd == -1) {
                 for (int j = i; j < nfds - 1; j++) {
                     fds[j].fd = fds[j + 1].fd;
