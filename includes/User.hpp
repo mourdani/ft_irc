@@ -6,6 +6,7 @@
 #define FT_IRC_USER_H
 
 #include <string>
+#include <unistd.h>
 
 class User {
 private:
@@ -13,6 +14,7 @@ private:
     std::string _realname;
     std::string _hostname;
     bool _operator;
+    int fd;
     User();
 
 public:
@@ -35,6 +37,12 @@ public:
     bool isOperator() const;
 
     void setOperator(bool);
+
+    int getFd() const;
+
+    void setFd(int fd);
+
+    void send_msg(std::string msg);
 
     virtual ~User();
 

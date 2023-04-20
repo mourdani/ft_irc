@@ -59,3 +59,17 @@ bool User::isOperator() const {
 void User::setOperator(bool op) {
     _operator = op;
 }
+
+int User::getFd() const {
+    return fd;
+}
+
+void User::setFd(int fd) {
+    User::fd = fd;
+}
+
+void User::send_msg(std::string msg) {
+
+    write(fd, msg.c_str(), msg.length());
+
+}
