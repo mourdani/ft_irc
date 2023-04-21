@@ -28,6 +28,8 @@ public:
     virtual ~Canal();
 
     Canal &operator=(const Canal &canal);
+
+	void	addUser(User user);
 };
 
 std::ostream &operator<<(std::ostream &outFile, Canal const &canal);

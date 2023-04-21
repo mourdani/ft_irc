@@ -33,3 +33,9 @@ const std::string &Canal::getName() const {
 void Canal::setName(const std::string &name) {
     _name = name;
 }
+
+void	Canal::addUser(User user)
+{
+	this->_users.push_back(user.getHostname());
+}
+
