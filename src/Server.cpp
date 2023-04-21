@@ -1,4 +1,5 @@
-#include "../includes/Server.hpp"
+#include "Server.hpp"
+#include "commands.hpp"
 
 void Server::init() {
     struct addrinfo *result;
@@ -119,6 +120,7 @@ void Server::run() {
                     fds[i].fd = -1;
                     continue;
                 }
+				handle_command(*this, i, buf);
                 std::cout << "Client " << i << " sent: " << buf;
                 memset(buf, 0, 1024);
             }
