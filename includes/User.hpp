@@ -20,6 +20,8 @@ private:
 public:
     User(std::string hostname);
 
+    User(std::string nickname, std::string realname, std::string hostname);
+
     User(const User &user);
 
     const std::string &getNickname() const;

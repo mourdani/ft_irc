@@ -2,11 +2,11 @@
 
 void Server::init() {
     struct addrinfo *result;
-
+    
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints)); // Initialize hints struct to zero
 // 
-    hints.ai_family = AF_INET6;       /* Allow IPv6 */
+    hints.ai_family = AF_INET;       /* Allow IPv6 */
     hints.ai_socktype = SOCK_STREAM;  /* Stream socket */
     hints.ai_flags = AI_PASSIVE;      /* For wildcard IP address */
 
@@ -19,12 +19,12 @@ void Server::init() {
         std::cerr << "Failed to get address information." << std::endl;
         throw std::exception();
     }
-
+    
     try {
         while (result != NULL) {
             this->socketfd = socket(result->ai_family,
-                                    result->ai_socktype,
-                                    result->ai_protocol);
+                              result->ai_socktype,
+                              result->ai_protocol);
 
             if (this->socketfd == -1) {
                 result = result->ai_next; // Try next address
@@ -33,7 +33,7 @@ void Server::init() {
 
             if (bind(this->socketfd, result->ai_addr, result->ai_addrlen) == 0) {
                 std::cout << "Server listening on port " \
- << GREEN << port << RESET << std::endl;
+                    << GREEN << port << RESET << std::endl;
                 break;
             }
 
@@ -69,46 +69,33 @@ void Server::run() {
             std::cerr << "Poll failed" << std::endl;
             break;
         }
+        if (fds[0].revents & POLLIN) { // New connection
+            struct sockaddr_in client_addr;
+            socklen_t client_len = sizeof(client_addr);
 
-        if (fds[0].revents & POLLIN) {
-            if (fds[0].revents & POLLIN) {
-                struct sockaddr_in client_addr;
-                socklen_t client_len = sizeof(client_addr);
-                int client_fd = accept(this->socketfd, (struct sockaddr *) &client_addr, &client_len);
+            int client_fd = accept(this->socketfd, (struct sockaddr*)&client_addr, &client_len);
 
-                if (client_fd < 0) {
-                    std::cerr << "Accept failed" << std::endl;
-                    continue;
-                }
-
-                fds[nfds].fd = client_fd;
-                fds[nfds].events = POLLIN;
-                nfds++;
-
-
-                // Get client's hostname
-                char host[NI_MAXHOST];
-                char service[NI_MAXSERV];
-                memset(host, 0, NI_MAXHOST);
-                memset(service, 0, NI_MAXSERV);
-
-
-                int result = getnameinfo((struct sockaddr *) &client_addr, client_len, host, NI_MAXHOST, service,
-                                         NI_MAXSERV, 0);
-                if (result) {
-                    std::cout << host << " connected on port " << service << std::endl;
-                } else {
-                    inet_ntop(AF_INET, &client_addr.sin_addr, host, NI_MAXHOST);
-                    std::cout << host << " connected on port " << ntohs(client_addr.sin_port) << std::endl;
-                }
-
-                //Creating user
-                User *user = new User(host);
-                user->setFd(client_fd);
-                add_user(*user);
-
-                user->send_msg("Welcome to the IRC server\r \n");
+            if (client_fd < 0) {
+                std::cerr << "Accept failed" << std::endl;
+                continue;
             }
+
+            fds[nfds].fd = client_fd;
+            fds[nfds].events = POLLIN;
+            nfds++;
+            /*
+             *
+             * ADD USER OBJECT HERE
+             *
+             *
+            */
+            std::cout << "New connection on socket " << client_fd << std::endl;
+
+            std::cout << "hostname: " << inet_ntoa(client_addr.sin_addr) << std::endl;
+
+
+            std::string msg = "Welcome to the IRC server!";
+            write(client_fd, msg.c_str(), msg.length());
         }
 
         for (int i = 1; i < nfds; i++) {

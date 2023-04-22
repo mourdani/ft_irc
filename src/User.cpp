@@ -7,6 +7,12 @@ User::User(std::string hostname) {
     _hostname = hostname;
 }
 
+User::User(std::string nickname, std::string realname, std::string hostname) {
+    _nickname = nickname;
+    _realname = realname;
+    _hostname = hostname;
+}
+
 User::User() {
 
 }
