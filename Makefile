@@ -3,7 +3,8 @@ NAME		= ircserv
 SRCDIR		= src/
 OBJDIR		= obj/
 INCLUDES	= includes/
-SRC			= main.cpp User.cpp Canal.cpp Server.cpp
+SRC			= main.cpp User.cpp Canal.cpp Server.cpp commands/command_handler.cpp
+DEP			= $(OBJS:.o=.d)
 
 # Compiler options
 CC			= c++
@@ -26,6 +27,9 @@ $(NAME): $(OBJS)
 
 	@$(CC) -o $@ $(OBJS)
 
+-include $(DEP)
+
+
 $(OBJDIR)%.o: $(SRCDIR)%.cpp
 	@make create_dir_objs --no-print-directory
 	@make print_name --no-print-directory
@@ -36,13 +40,15 @@ $(OBJDIR)%.o: $(SRCDIR)%.cpp
 	@tput setaf 6
 	@echo "${@}"
 
-	@$(CC) $(LFLAGS) $(CFLAGS) -c -I $(INCLUDES) -o $@ $<
+	@$(CC) $(LFLAGS) $(CFLAGS) -MMD -MP -c -I $(INCLUDES) -o $@ $<
 
 create_dir_objs:
 	@mkdir -p $(OBJDIR)
+	@mkdir -p $(OBJDIR)/commands
 
 clean:
 	@rm -fr $(OBJDIR)
+	@rm	-f ${DEP}
 	@make print_name --no-print-directory
 	@tput bold
 	@tput setaf 2
