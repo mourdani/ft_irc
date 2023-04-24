@@ -1,7 +1,8 @@
 #include "Server.hpp"
 #include "commands.hpp"
+#include <algorithm>
 
-void Server::init() {
+int Server::init() {
     struct addrinfo *result;
     
     struct addrinfo hints;
@@ -53,7 +54,9 @@ void Server::init() {
         }
     } catch (std::exception &e) {
         std::cerr << "Failed to initialize server" << std::endl;
+		return 1;
     }
+	return 0;
 }
 
 void Server::run() {
@@ -90,6 +93,9 @@ void Server::run() {
              *
              *
             */
+			User	user(inet_ntoa(client_addr.sin_addr));
+			user.setFd(client_fd);
+			this->add_user(user);
             std::cout << "New connection on socket " << client_fd << std::endl;
 
             std::cout << "hostname: " << inet_ntoa(client_addr.sin_addr) << std::endl;
@@ -110,9 +116,16 @@ void Server::run() {
                     fds[i].fd = -1;
                     continue;
                 }
-				//replace i by user, add channel as argument
-				handle_command(*this, i, buf);
-                std::cout << "Client " << i << " sent: " << buf;
+				//add channel as argument
+				User	*user = this->get_user(fds[i].fd);
+				if (user == NULL)
+					std::cout << "Something is very wrong\n";
+				else
+				{
+					if (handle_command(*this, *user, buf) == 2)
+						fds[i].fd = -1;
+				}
+				std::cout << "Client " << i << " sent: " << buf;
                 memset(buf, 0, 1024);
             }
         }
@@ -129,8 +142,16 @@ void Server::run() {
     }
 }
 
+bool Server::user_exists(int fd) {
+	std::map<int, User>::iterator it;
+	it = this->users.find(fd);
+	if (it == this->users.end())
+		return 0;
+    return 1;
+}
+
 bool Server::user_exists(std::string nickname) {
-    for (std::map<std::string, User>::iterator it = this->users.begin(); it != this->users.end(); ++it)
+    for (std::map<int, User>::iterator it = this->users.begin(); it != this->users.end(); ++it)
         if (it->second.getNickname() == nickname)
             return true;
 
@@ -145,10 +166,10 @@ bool Server::canal_exists(std::string canal) {
     return false;
 }
 
-bool Server::add_user(User user) {
-    if (user_exists(user.getNickname()))
-        return false;
-    this->users.insert(std::pair<std::string, User>(user.getHostname(), user));
+bool Server::add_user(User& user) {
+    if (user_exists(user.getFd()))
+		return false;
+	this->users.insert(std::pair<int, User>(user.getFd(), user));
 
     return true;
 }
@@ -161,12 +182,12 @@ bool Server::add_canal(Canal canal) {
     return true;
 }
 
-User *Server::get_user(std::string nickname) {
-    for (std::map<std::string, User>::iterator it = this->users.begin(); it != this->users.end(); ++it)
-        if (it->second.getNickname() == nickname)
-            return &it->second;
-
-    return NULL;
+User *Server::get_user(int fd) {
+	std::map<int, User>::iterator it;
+	it = this->users.find(fd);
+	if (it == this->users.end())
+		return NULL;
+    return &(it->second);
 }
 
 Canal *Server::get_canal(std::string canal) {

@@ -31,14 +31,15 @@ public:
 	Server(const Server& other);
 	Server& operator=(const Server& other);
 
-	void init();
+	int init();
 	void run();
 
 	bool	user_exists(std::string nickname);
+	bool 	user_exists(int fd);
 	bool	canal_exists(std::string canal);
-	bool	add_user(User user);
+	bool	add_user(User& user);
 	bool	add_canal(Canal canal);
-	User*	get_user(std::string hostname);
+	User*	get_user(int fd);
 	Canal*	get_canal(std::string canal);
 
 
@@ -46,7 +47,7 @@ private:
 	int port;
 	std::string password;
 	int socketfd;
-	std::map<std::string, User> users;
+	std::map<int, User> users;
 	std::map<std::string, Canal> canals;
 };
 

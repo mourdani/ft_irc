@@ -25,7 +25,8 @@ int main(int ac, char **av) {
         return exit_error("Error : port outside [0, 65535]");
 
     Server server(port, av[2]);
-    server.init();
+    if (server.init())
+		return 1;
     server.run();
 
     return 1;

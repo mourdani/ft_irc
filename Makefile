@@ -3,12 +3,12 @@ NAME		= ircserv
 SRCDIR		= src/
 OBJDIR		= obj/
 INCLUDES	= includes/
-SRC			= main.cpp User.cpp Canal.cpp Server.cpp commands/command_handler.cpp
+SRC			= main.cpp User.cpp Canal.cpp Server.cpp commands/command_handler.cpp utils/write_fd.cpp
 DEP			= $(OBJS:.o=.d)
 
 # Compiler options
 CC			= c++
-CFLAGS		= -Wall -Wextra -Werror -std=c++98
+CFLAGS		= -Wall -Wextra -Werror -g -std=c++98
 
 OBJ			= $(patsubst %.cpp, %.o, $(SRC))
 OBJS		= $(addprefix ${OBJDIR}, ${OBJ})
@@ -45,6 +45,7 @@ $(OBJDIR)%.o: $(SRCDIR)%.cpp
 create_dir_objs:
 	@mkdir -p $(OBJDIR)
 	@mkdir -p $(OBJDIR)/commands
+	@mkdir -p $(OBJDIR)/utils
 
 clean:
 	@rm -fr $(OBJDIR)
