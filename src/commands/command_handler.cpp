@@ -1,8 +1,9 @@
 #include "Server.hpp"
 #include "commands.hpp"
+#include "utils.hpp"
 #include <vector>
 
-int	nick(Server& server, User user, Canal channel, std::vector<std::string> args)
+int	nick(Server& server, User& user, Canal& channel, std::vector<std::string> args)
 {
 	(void)server;
 	(void)args;
@@ -14,7 +15,7 @@ int	nick(Server& server, User user, Canal channel, std::vector<std::string> args
 	return 0;
 }
 
-int	join(Server& server, User user, Canal channel, std::vector<std::string> args)
+int	join(Server& server, User& user, Canal& channel, std::vector<std::string> args)
 {
 	(void)server;
 	(void)args;
@@ -40,6 +41,16 @@ int	join(Server& server, User user, Canal channel, std::vector<std::string> args
 	return 0;
 }
 
+int	quit(Server& server, User& user, Canal& channel, std::vector<std::string> args)
+{
+	(void)server;
+	(void)user;
+	(void)channel;
+	(void)args;
+	write(user.getFd(), "Quitting server\n", 16);
+	close(user.getFd());
+	return 2;
+}
 
 std::vector<std::string>	split(std::string str, char delimiter)
 {
@@ -57,19 +68,20 @@ std::vector<std::string>	split(std::string str, char delimiter)
 	return res;
 }
 
-int handle_command(Server& server, int i, char *buf)
+int handle_command(Server& server, User& user, char *buf)
 {
-	User						user_bidon("name");
 	Canal						channel_bidon;
 	std::vector<std::string>	sep_commands;
 	std::vector<std::string>	args;
 	std::string	command_names[] = {
 		"NICK",
 		"JOIN",
+		"QUIT",
 	} ;
 	command	commands[] = {
 		nick,
 		join,
+		quit,
 	} ;
 
 	sep_commands = split(buf, '\n');
@@ -79,10 +91,9 @@ int handle_command(Server& server, int i, char *buf)
 		for (int i = 0; i < 1; i++)
 		{
 			if (args[0].compare(command_names[i]) == 0)
-				return commands[i](server, user_bidon, channel_bidon, args);
+				return commands[i](server, user, channel_bidon, args);
 		}
 	}
 	(void)server;
-	(void)i;
 	return 0;
 }

@@ -15,9 +15,9 @@ private:
     std::string _hostname;
     bool _operator;
     int fd;
-    User();
 
 public:
+    User();
     User(std::string hostname);
 
     User(std::string nickname, std::string realname, std::string hostname);
