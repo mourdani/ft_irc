@@ -1,10 +1,10 @@
 IRC Command:
 
--NICK
+-NICK - done (will have to add special nick function for when user first joining)
 -USER
--QUIT
+-QUIT - done
 
--JOIN
+-JOIN - done
 -PART
 -LIST
 

@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include "commands.hpp"
 #include <algorithm>
 
 int Server::init() {
@@ -122,7 +121,7 @@ void Server::run() {
 					std::cout << "Something is very wrong\n";
 				else
 				{
-					if (handle_command(*this, *user, buf) == 2)
+					if (handle_command(*user, buf) == 2)
 						fds[i].fd = -1;
 				}
 				std::cout << "Client " << i << " sent: " << buf;
@@ -170,7 +169,7 @@ bool Server::add_user(User& user) {
     if (user_exists(user.getFd()))
 		return false;
 	this->users.insert(std::pair<int, User>(user.getFd(), user));
-
+	this->_user_ids.insert(std::pair<std::string, int>(user.getNickname(), user.getFd()));
     return true;
 }
 
@@ -189,6 +188,16 @@ User *Server::get_user(int fd) {
 		return NULL;
     return &(it->second);
 }
+
+User*	Server::get_user(std::string nickname)
+{
+	std::map<std::string, int>::iterator it;
+	it = _user_ids.find(nickname);
+	if (it == _user_ids.end())
+		return NULL;
+	return (get_user(it->first));
+}
+
 
 Canal *Server::get_canal(std::string canal) {
     for (std::map<std::string, Canal>::iterator it = this->canals.begin(); it != this->canals.end(); ++it)

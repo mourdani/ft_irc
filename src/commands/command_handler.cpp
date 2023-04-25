@@ -1,32 +1,34 @@
 #include "Server.hpp"
-#include "commands.hpp"
 #include "utils.hpp"
 #include <vector>
 
-int	nick(Server& server, User& user, Canal& channel, std::vector<std::string> args)
+int	Server::nick(User& user, std::vector<std::string> args)
 {
-	(void)server;
-	(void)args;
-	(void)channel;
 	//this shouldn't happen
 	if (args.size() < 2)
 		return 1;
+	if (get_user(args[1]) != NULL)
+	{
+		user.send_msg("Nickname already taken\n");
+		return 0;
+	}
 	user.setNickname(args[1]);
+	user.send_msg("Nickname successfully changed.\n");
 	return 0;
 }
 
-int	join(Server& server, User& user, Canal& channel, std::vector<std::string> args)
+int	Server::join(User& user, std::vector<std::string> args)
 {
-	(void)server;
-	(void)args;
-	(void)channel;
-	(void)user;
-
 	std::map<std::string, Canal> canals;
 	std::map<std::string, Canal>::iterator i;
 	//this shouldn't happen
 	if (args.size() < 2)
 		return 1;
+	if (args.size() > 2)
+	{
+		user.send_msg("Too many arguments.\n");
+		return 0;
+	}
 	for (i = canals.begin(); i != canals.end(); i++)
 	{
 		if (i->second.getName().compare(args[1]) == 0)
@@ -34,20 +36,43 @@ int	join(Server& server, User& user, Canal& channel, std::vector<std::string> ar
 	}
 	if (i == canals.end())
 	{
-		//reply to user that canal doesn't exist?
+		user.send_msg("This channel doesn't exist.\n");
 		return 0;
 	}
-	channel.addUser(user);
+	i->second.addUser(user);
 	return 0;
 }
 
-int	quit(Server& server, User& user, Canal& channel, std::vector<std::string> args)
+int	Server::part(User& user, std::vector<std::string> args)
 {
-	(void)server;
+	std::map<std::string, Canal> canals;
+	std::map<std::string, Canal>::iterator i;
+	//this shouldn't happen
+	if (args.size() < 2)
+		return 1;
+	if (args.size() > 2)
+	{
+		user.send_msg("Too many arguments.\n");
+		return 0;
+	}
+	for (i = canals.begin(); i != canals.end(); i++)
+	{
+		if (i->second.getName().compare(args[1]) == 0)
+			break ;
+	}
+	if (i == canals.end())
+	{
+		user.send_msg("This channel doesn't exist.\n");
+		return 0;
+	}
+	i->second.removeUser(user);
+	return 0;
+}
+
+int	Server::quit(User& user, std::vector<std::string> args)
+{
 	(void)user;
-	(void)channel;
 	(void)args;
-	write(user.getFd(), "Quitting server\n", 16);
 	close(user.getFd());
 	return 2;
 }
@@ -68,9 +93,8 @@ std::vector<std::string>	split(std::string str, char delimiter)
 	return res;
 }
 
-int handle_command(Server& server, User& user, char *buf)
+int Server::handle_command(User& user, char *buf)
 {
-	Canal						channel_bidon;
 	std::vector<std::string>	sep_commands;
 	std::vector<std::string>	args;
 	std::string	command_names[] = {
@@ -79,11 +103,11 @@ int handle_command(Server& server, User& user, char *buf)
 		"QUIT",
 	} ;
 	command	commands[] = {
-		nick,
-		join,
-		quit,
+		&Server::nick,
+		&Server::join,
+		&Server::quit,
 	} ;
-
+	std::cout << "user's fd is " << user.getFd() << std::endl;
 	sep_commands = split(buf, '\n');
 	for (std::vector<std::string>::iterator i = sep_commands.begin(); i != sep_commands.end(); i++)
 	{
@@ -91,9 +115,8 @@ int handle_command(Server& server, User& user, char *buf)
 		for (int i = 0; i < 1; i++)
 		{
 			if (args[0].compare(command_names[i]) == 0)
-				return commands[i](server, user, channel_bidon, args);
+				return (this->*commands[i])(user, args);
 		}
 	}
-	(void)server;
 	return 0;
 }

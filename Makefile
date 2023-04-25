@@ -3,7 +3,7 @@ NAME		= ircserv
 SRCDIR		= src/
 OBJDIR		= obj/
 INCLUDES	= includes/
-SRC			= main.cpp User.cpp Canal.cpp Server.cpp commands/command_handler.cpp utils/write_fd.cpp
+SRC			= main.cpp User.cpp Canal.cpp Server.cpp commands/command_handler.cpp
 DEP			= $(OBJS:.o=.d)
 
 # Compiler options

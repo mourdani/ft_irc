@@ -34,8 +34,20 @@ void Canal::setName(const std::string &name) {
     _name = name;
 }
 
+bool	Canal::checkUser(int id)
+{
+	if (_users.find(id) == _users.end())
+		return 0;
+	return 1;
+}
+
 void	Canal::addUser(User user)
 {
-	this->_users.push_back(user.getHostname());
+	this->_users.insert(std::pair<int, User>(user.getFd(), user));
+}
+
+void	Canal::removeUser(User user)
+{
+	this->_users.erase(user.getFd());
 }
 

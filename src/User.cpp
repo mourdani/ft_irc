@@ -26,6 +26,7 @@ User &User::operator=(const User &user) {
     this->_nickname = user._nickname;
     this->_operator = user._operator;
     this->_realname = user._realname;
+	this->fd = user.fd;
 
     return *this;
 }

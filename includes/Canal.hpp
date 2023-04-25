@@ -6,13 +6,13 @@
 #define FT_IRC_CANAL_H
 
 #include <string>
-#include <vector>
+#include <map>
 #include "User.hpp"
 
 class Canal {
 private:
-    std::string _name;
-    std::vector<std::string> _users; //hostname of user
+	std::string _name;
+	std::map<int, User>	_users; //hostname of user
 
 
 public:
@@ -29,7 +29,12 @@ public:
 
     Canal &operator=(const Canal &canal);
 
+	bool	checkUser(int id);
+
 	void	addUser(User user);
+
+	void	removeUser(User user);
+
 };
 
 std::ostream &operator<<(std::ostream &outFile, Canal const &canal);

@@ -15,6 +15,7 @@
 #include <cstring>
 #include <string>
 #include <map>
+#include <vector>
 #include "User.hpp"
 #include "Canal.hpp"
 #include "colors.hpp"
@@ -40,7 +41,14 @@ public:
 	bool	add_user(User& user);
 	bool	add_canal(Canal canal);
 	User*	get_user(int fd);
+	User*	get_user(std::string nickname);
 	Canal*	get_canal(std::string canal);
+
+	int handle_command(User& user, char *buf);
+	int	quit(User& user, std::vector<std::string> args);
+	int	nick(User& user, std::vector<std::string> args);
+	int	join(User& user, std::vector<std::string> args);
+	int	part(User& user, std::vector<std::string> args);
 
 
 private:
@@ -48,7 +56,10 @@ private:
 	std::string password;
 	int socketfd;
 	std::map<int, User> users;
+	std::map<std::string, int> _user_ids;
 	std::map<std::string, Canal> canals;
 };
+
+typedef	int (Server::*command)(User& user, std::vector<std::string> args);
 
 #endif
