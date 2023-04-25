@@ -12,6 +12,8 @@ int	Server::nick(User& user, std::vector<std::string> args)
 		user.send_msg("Nickname already taken\n");
 		return 0;
 	}
+	_user_ids.erase(user.getNickname());
+	_user_ids.insert(std::pair<std::string, int>(args[1], user.getFd()));
 	user.setNickname(args[1]);
 	user.send_msg("Nickname successfully changed.\n");
 	return 0;
@@ -107,7 +109,6 @@ int Server::handle_command(User& user, char *buf)
 		&Server::join,
 		&Server::quit,
 	} ;
-	std::cout << "user's fd is " << user.getFd() << std::endl;
 	sep_commands = split(buf, '\n');
 	for (std::vector<std::string>::iterator i = sep_commands.begin(); i != sep_commands.end(); i++)
 	{
