@@ -86,19 +86,21 @@ void Server::run() {
             fds[nfds].fd = client_fd;
             fds[nfds].events = POLLIN;
             nfds++;
-			User	user(inet_ntoa(client_addr.sin_addr));
-			user.setFd(client_fd);
-			this->add_user(user);
-            std::cout << "New connection on socket " << client_fd << std::endl;
 
-            std::cout << "hostname: " << inet_ntoa(client_addr.sin_addr) << std::endl;
+            User	user(inet_ntoa(client_addr.sin_addr));
+            user.setFd(client_fd);
+            this->add_user(user);
+            
 
 
-            std::string msg = "Welcome to the IRC server!";
+            std::string msg = "Welcome to the IRC server!\n";
             write(client_fd, msg.c_str(), msg.length());
         }
 
-        for (int i = 1; i < nfds; i++) {
+        Canal general("general");
+        add_canal(general);
+        
+        for (int i = 1; i < nfds; i++) { 
             if (fds[i].revents & POLLIN) {
                 char buf[1024];
                 memset(buf, 0, 1024);
@@ -109,15 +111,17 @@ void Server::run() {
                     fds[i].fd = -1;
                     continue;
                 }
-				std::cout << "Client " << i << " sent: " << buf;
-				User	*user = this->get_user(fds[i].fd);
-				if (user == NULL)
-					std::cout << "Something is very wrong\n";
-				else
-				{
-					if (handle_command(*user, buf) == 2)
-						fds[i].fd = -1;
-				}
+		std::cout << "Client " << i << " sent: " << buf; 
+
+	    	User	*user = this->get_user(fds[i].fd);
+		if (user == NULL)
+			std::cout << "Something is very wrong\n";
+		else
+		{
+			if (handle_command(*user, buf) == 2)
+				fds[i].fd = -1;
+            
+                }
                 memset(buf, 0, 1024);
             }
         }

@@ -47,7 +47,9 @@ public:
 	int handle_command(User& user, char *buf);
 	int	join(User& user, std::vector<std::string> args);
 	int	nick(User& user, std::vector<std::string> args);
+	int	user(User& user, std::vector<std::string> args);
 	int	part(User& user, std::vector<std::string> args);
+	int	list(User& user, std::vector<std::string> args);
 	int	privmsg(User& user, std::vector<std::string> args);
 	int	quit(User& user, std::vector<std::string> args);
 
@@ -57,7 +59,7 @@ private:
 	std::string password;
 	int socketfd;
 	std::map<int, User> users;
-	std::map<std::string, int> _user_ids;
+	std::map<std::string, int> _user_ids; //
 	std::map<std::string, Canal> canals;
 };
 

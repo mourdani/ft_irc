@@ -16,6 +16,6 @@ int	Server::nick(User& user, std::vector<std::string> args)
 	pair.second = user.getFd();
 	_user_ids.insert(std::pair<std::string, int>(args[1], user.getFd()));
 	user.setNickname(args[1]);
-	user.send_msg("Nickname successfully changed.\n");
+	user.send_msg("Nickname set to " + args[1] + ".\n");
 	return 0;
 }

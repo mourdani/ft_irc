@@ -11,6 +11,7 @@
 class User {
 private:
     std::string _nickname;
+    std::string _username;
     std::string _realname;
     std::string _hostname;
     bool _operator;
@@ -27,6 +28,10 @@ public:
     const std::string &getNickname() const;
 
     void setNickname(const std::string &nickname);
+
+    const std::string &getUsername() const;
+
+    void setUsername(const std::string &username);
 
     const std::string &getRealname() const;
 
