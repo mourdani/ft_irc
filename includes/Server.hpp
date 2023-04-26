@@ -39,16 +39,17 @@ public:
 	bool 	user_exists(int fd);
 	bool	canal_exists(std::string canal);
 	bool	add_user(User& user);
-	bool	add_canal(Canal canal);
+	bool	add_canal(Canal& canal);
 	User*	get_user(int fd);
 	User*	get_user(std::string nickname);
 	Canal*	get_canal(std::string canal);
 
 	int handle_command(User& user, char *buf);
-	int	quit(User& user, std::vector<std::string> args);
-	int	nick(User& user, std::vector<std::string> args);
 	int	join(User& user, std::vector<std::string> args);
+	int	nick(User& user, std::vector<std::string> args);
 	int	part(User& user, std::vector<std::string> args);
+	int	privmsg(User& user, std::vector<std::string> args);
+	int	quit(User& user, std::vector<std::string> args);
 
 
 private:

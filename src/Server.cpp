@@ -86,12 +86,6 @@ void Server::run() {
             fds[nfds].fd = client_fd;
             fds[nfds].events = POLLIN;
             nfds++;
-            /*
-             *
-             * ADD USER OBJECT HERE
-             *
-             *
-            */
 			User	user(inet_ntoa(client_addr.sin_addr));
 			user.setFd(client_fd);
 			this->add_user(user);
@@ -115,7 +109,7 @@ void Server::run() {
                     fds[i].fd = -1;
                     continue;
                 }
-				//add channel as argument
+				std::cout << "Client " << i << " sent: " << buf;
 				User	*user = this->get_user(fds[i].fd);
 				if (user == NULL)
 					std::cout << "Something is very wrong\n";
@@ -124,7 +118,6 @@ void Server::run() {
 					if (handle_command(*user, buf) == 2)
 						fds[i].fd = -1;
 				}
-				std::cout << "Client " << i << " sent: " << buf;
                 memset(buf, 0, 1024);
             }
         }
@@ -166,14 +159,14 @@ bool Server::canal_exists(std::string canal) {
 }
 
 bool Server::add_user(User& user) {
-    if (user_exists(user.getFd()))
+	if (user_exists(user.getFd()))
 		return false;
 	this->users.insert(std::pair<int, User>(user.getFd(), user));
 	this->_user_ids.insert(std::pair<std::string, int>(user.getNickname(), user.getFd()));
-    return true;
+	return true;
 }
 
-bool Server::add_canal(Canal canal) {
+bool Server::add_canal(Canal& canal) {
     if (canal_exists(canal.getName()))
         return false;
     this->canals.insert(std::pair<std::string, Canal>(canal.getName(), canal));
@@ -195,20 +188,13 @@ User*	Server::get_user(std::string nickname)
 	it = _user_ids.find(nickname);
 	if (it == _user_ids.end())
 		return NULL;
-	return (get_user(it->first));
+	return (get_user(it->second));
 }
 
 
 Canal *Server::get_canal(std::string canal) {
-    for (std::map<std::string, Canal>::iterator it = this->canals.begin(); it != this->canals.end(); ++it)
-        if (it->second.getName() == canal)
-            return &it->second;
-
-    return NULL;
+	std::map<std::string, Canal>::iterator it = canals.find(canal);
+	if (it == canals.end())
+		return NULL;
+    return &(it->second);
 }
-
-//int main() {
-//    Server server(6668);
-//    server.init();
-//    return 0;
-//}

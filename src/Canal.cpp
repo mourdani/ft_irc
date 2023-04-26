@@ -30,6 +30,11 @@ const std::string &Canal::getName() const {
     return _name;
 }
 
+std::map<int, User>	Canal::getUsers() const {
+	return _users;
+}
+
+
 void Canal::setName(const std::string &name) {
     _name = name;
 }

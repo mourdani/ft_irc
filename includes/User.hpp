@@ -49,6 +49,8 @@ public:
     virtual ~User();
 
     User &operator=(const User &user);
+    bool	operator==(const User &user);
+    bool	operator!=(const User &user);
 };
 
 std::ostream &operator<<(std::ostream &outFile, User const &user);

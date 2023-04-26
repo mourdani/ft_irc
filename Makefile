@@ -3,7 +3,16 @@ NAME		= ircserv
 SRCDIR		= src/
 OBJDIR		= obj/
 INCLUDES	= includes/
-SRC			= main.cpp User.cpp Canal.cpp Server.cpp commands/command_handler.cpp
+SRC			= main.cpp \
+			User.cpp \
+			Canal.cpp \
+			Server.cpp \
+			commands/command_handler.cpp \
+			commands/JOIN.cpp \
+			commands/NICK.cpp \
+			commands/PART.cpp \
+			commands/PRIVMSG.cpp \
+			commands/QUIT.cpp
 DEP			= $(OBJS:.o=.d)
 
 # Compiler options

@@ -12,8 +12,7 @@
 class Canal {
 private:
 	std::string _name;
-	std::map<int, User>	_users; //hostname of user
-
+	std::map<int, User>	_users;
 
 public:
     Canal();
@@ -22,6 +21,7 @@ public:
     Canal(const Canal &canal);
 
     const std::string &getName() const;
+	std::map<int, User>	getUsers() const;
 
     void setName(const std::string &name);
 

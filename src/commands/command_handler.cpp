@@ -1,83 +1,5 @@
 #include "Server.hpp"
-#include "utils.hpp"
 #include <vector>
-
-int	Server::nick(User& user, std::vector<std::string> args)
-{
-	//this shouldn't happen
-	if (args.size() < 2)
-		return 1;
-	if (get_user(args[1]) != NULL)
-	{
-		user.send_msg("Nickname already taken\n");
-		return 0;
-	}
-	_user_ids.erase(user.getNickname());
-	_user_ids.insert(std::pair<std::string, int>(args[1], user.getFd()));
-	user.setNickname(args[1]);
-	user.send_msg("Nickname successfully changed.\n");
-	return 0;
-}
-
-int	Server::join(User& user, std::vector<std::string> args)
-{
-	std::map<std::string, Canal> canals;
-	std::map<std::string, Canal>::iterator i;
-	//this shouldn't happen
-	if (args.size() < 2)
-		return 1;
-	if (args.size() > 2)
-	{
-		user.send_msg("Too many arguments.\n");
-		return 0;
-	}
-	for (i = canals.begin(); i != canals.end(); i++)
-	{
-		if (i->second.getName().compare(args[1]) == 0)
-			break ;
-	}
-	if (i == canals.end())
-	{
-		user.send_msg("This channel doesn't exist.\n");
-		return 0;
-	}
-	i->second.addUser(user);
-	return 0;
-}
-
-int	Server::part(User& user, std::vector<std::string> args)
-{
-	std::map<std::string, Canal> canals;
-	std::map<std::string, Canal>::iterator i;
-	//this shouldn't happen
-	if (args.size() < 2)
-		return 1;
-	if (args.size() > 2)
-	{
-		user.send_msg("Too many arguments.\n");
-		return 0;
-	}
-	for (i = canals.begin(); i != canals.end(); i++)
-	{
-		if (i->second.getName().compare(args[1]) == 0)
-			break ;
-	}
-	if (i == canals.end())
-	{
-		user.send_msg("This channel doesn't exist.\n");
-		return 0;
-	}
-	i->second.removeUser(user);
-	return 0;
-}
-
-int	Server::quit(User& user, std::vector<std::string> args)
-{
-	(void)user;
-	(void)args;
-	close(user.getFd());
-	return 2;
-}
 
 std::vector<std::string>	split(std::string str, char delimiter)
 {
@@ -86,9 +8,11 @@ std::vector<std::string>	split(std::string str, char delimiter)
 	std::vector<std::string>	res;
 
 	start = 0;
-	while (end != std::string::npos)
+	while (start < str.size())
 	{
 		end = str.find(delimiter, start);
+		if (end == std::string::npos)
+			end = str.size() - 1;
 		res.push_back(str.substr(start, end - start));
 		start = end + 1;
 	}
@@ -103,20 +27,25 @@ int Server::handle_command(User& user, char *buf)
 		"NICK",
 		"JOIN",
 		"QUIT",
+		"PRIVMSG",
+		""
 	} ;
 	command	commands[] = {
 		&Server::nick,
 		&Server::join,
 		&Server::quit,
+		&Server::privmsg,
 	} ;
 	sep_commands = split(buf, '\n');
 	for (std::vector<std::string>::iterator i = sep_commands.begin(); i != sep_commands.end(); i++)
 	{
 		args = split(*i, ' ');
-		for (int i = 0; i < 1; i++)
+		if (args.size() == 0)
+			continue ;
+		for (int j = 0; command_names[j].size(); j++)
 		{
-			if (args[0].compare(command_names[i]) == 0)
-				return (this->*commands[i])(user, args);
+			if (args[0].compare(command_names[j]) == 0)
+				return (this->*commands[j])(user, args);
 		}
 	}
 	return 0;

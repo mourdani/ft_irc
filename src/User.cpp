@@ -4,6 +4,7 @@
 #include "User.hpp"
 
 User::User(std::string hostname) {
+    _nickname = "tmp";
     _hostname = hostname;
 }
 
@@ -29,6 +30,16 @@ User &User::operator=(const User &user) {
 	this->fd = user.fd;
 
     return *this;
+}
+
+bool	User::operator==(const User &user)
+{
+	return this->fd == user.fd;
+}
+
+bool	User::operator!=(const User &user)
+{
+	return this->fd != user.fd;	
 }
 
 User::User(const User &user) {
