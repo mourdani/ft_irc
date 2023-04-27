@@ -93,11 +93,13 @@ void Server::run() {
             
 
 
-            std::string msg = "Welcome to the IRC server!\n";
-            write(client_fd, msg.c_str(), msg.length());
+            std::string msg = get_name() + " 001 " + user.getNickname() + " :Welcome to the Internet Relay Network " + user.getNickname() + "!\n";
+            if (write(client_fd, msg.c_str(), msg.length()) < 0)
+                std::cout << "Error writing to socket\n";
+            std::cout << RED << "sent to client: " << msg << std::endl;
         }
 
-        Canal general("general");
+        Canal general("#general");
         add_canal(general);
         
         for (int i = 1; i < nfds; i++) { 
@@ -201,4 +203,8 @@ Canal *Server::get_canal(std::string canal) {
 	if (it == canals.end())
 		return NULL;
     return &(it->second);
+}
+
+std::string Server::get_name() const {
+    return this->_name;
 }

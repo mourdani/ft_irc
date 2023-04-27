@@ -27,7 +27,7 @@
 class Server {
 public:
 	Server();
-	Server(int port, std::string password) : port(port), password(password) {};
+	Server(int port, std::string password) : port(port), password(password), _name("42_FTIRC") {};
 	~Server() {close(socketfd);};
 	Server(const Server& other);
 	Server& operator=(const Server& other);
@@ -53,11 +53,14 @@ public:
 	int	privmsg(User& user, std::vector<std::string> args);
 	int	quit(User& user, std::vector<std::string> args);
 
+	//get name
+	std::string get_name() const;
 
 private:
 	int port;
 	std::string password;
 	int socketfd;
+	std::string _name;
 	std::map<int, User> users;
 	std::map<std::string, int> _user_ids; //
 	std::map<std::string, Canal> canals;
