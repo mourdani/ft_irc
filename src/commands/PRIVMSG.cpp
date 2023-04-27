@@ -19,7 +19,7 @@ int	Server::privmsg(User& user, std::vector<std::string> args)
 	if (args[1][0] == '#')
 	{
 		Canal	*canal;
-		canal = get_canal(args[1].substr(1, args[1].size() - 1));
+		canal = get_canal(args[1]);
 		if (canal)
 		{
 			if (!canal->checkUser(user.getFd()))

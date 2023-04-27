@@ -23,6 +23,7 @@
 #define MAX_CLIENTS 50
 #define MAX_CANALS 5
 
+std::vector<std::string>	split(std::string str, char delimiter);
 
 class Server {
 public:
@@ -45,6 +46,8 @@ public:
 	Canal*	get_canal(std::string canal);
 
 	int handle_command(User& user, char *buf);
+	std::string	command_reply(int code, std::string reply) const;
+
 	int	join(User& user, std::vector<std::string> args);
 	int	nick(User& user, std::vector<std::string> args);
 	int	part(User& user, std::vector<std::string> args);

@@ -65,7 +65,6 @@ void Server::run() {
 
     fds[0].fd = this->socketfd;
     fds[0].events = POLLIN;
-
     while (1) {
         int ret = poll(fds, nfds, timeout);
         if (ret == -1) {
@@ -93,9 +92,7 @@ void Server::run() {
 
             std::cout << "hostname: " << inet_ntoa(client_addr.sin_addr) << std::endl;
 
-
-            std::string msg = "Welcome to the IRC server!";
-            write(client_fd, msg.c_str(), msg.length());
+			user.send_code("001", "Welcome to our IRC server!");
         }
 
         for (int i = 1; i < nfds; i++) {
@@ -103,21 +100,21 @@ void Server::run() {
                 char buf[1024];
                 memset(buf, 0, 1024);
                 int len = recv(fds[i].fd, buf, 1024, MSG_DONTWAIT);
-                if (len == 0) {
-                    std::cout << "Client " << i << " disconnected" << std::endl;
-                    close(fds[i].fd);
-                    fds[i].fd = -1;
-                    continue;
-                }
 				std::cout << "Client " << i << " sent: " << buf;
 				User	*user = this->get_user(fds[i].fd);
 				if (user == NULL)
-					std::cout << "Something is very wrong\n";
-				else
 				{
-					if (handle_command(*user, buf) == 2)
-						fds[i].fd = -1;
+					std::cout << "Something is very wrong\n";
+					continue;
 				}
+				if (len == 0) {
+                    std::cout << "Client " << i << " disconnected" << std::endl;
+                    quit(*user, split(buf, ' '));
+                    fds[i].fd = -1;
+                    continue;
+                }
+				if (handle_command(*user, buf) == 2)
+					fds[i].fd = -1;
                 memset(buf, 0, 1024);
             }
         }

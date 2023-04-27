@@ -7,8 +7,8 @@ int	Server::nick(User& user, std::vector<std::string> args)
 		return 1;
 	if (get_user(args[1]) != NULL)
 	{
-		user.send_msg("Nickname already taken\n");
-		return 0;
+		user.send_code("443", args[1].append(" :Nickname is already in use.\n"));
+		return 1;
 	}
 	_user_ids.erase(user.getNickname());
 	std::pair<std::string, int>	pair;

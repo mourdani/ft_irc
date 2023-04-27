@@ -31,7 +31,7 @@ public:
 
 	bool	checkUser(int id);
 
-	void	addUser(User user);
+	void	addUser(User &user);
 
 	void	removeUser(User user);
 

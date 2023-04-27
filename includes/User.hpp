@@ -46,6 +46,8 @@ public:
 
     void send_msg(std::string msg);
 
+	void	send_code(std::string code, std::string msg);
+
     virtual ~User();
 
     User &operator=(const User &user);

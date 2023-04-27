@@ -2,9 +2,11 @@
 // Created by d420d4 on 11/04/23.
 //
 #include "User.hpp"
+#include <iostream>
 
 User::User(std::string hostname) {
-    _nickname = "tmp";
+    _nickname = "";
+	_realname = "";
     _hostname = hostname;
 }
 
@@ -87,7 +89,21 @@ void User::setFd(int fd) {
 }
 
 void User::send_msg(std::string msg) {
-
+	std::cout << "sending: \"" << msg << "\" to user " << _nickname << std::endl;
     write(fd, msg.c_str(), msg.length());
 
+}
+#include <iostream>
+void	User::send_code(std::string code, std::string msg)
+{
+	std::string	reply;
+	
+	reply = ":localhost ";
+	reply.append(code);
+	reply.append(" ");
+	reply.append(getNickname());
+	reply.append(" ");
+	reply.append(msg);
+	reply.append("\n");
+	send_msg(reply);
 }
