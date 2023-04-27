@@ -52,6 +52,8 @@ public:
 	int	list(User& user, std::vector<std::string> args);
 	int	privmsg(User& user, std::vector<std::string> args);
 	int	quit(User& user, std::vector<std::string> args);
+	int	ping(User& user, std::vector<std::string> args);
+	int	names(User& user, std::vector<std::string> args);
 
 	//get name
 	std::string get_name() const;

@@ -29,7 +29,6 @@ int	Server::join(User& user, std::vector<std::string> args)
 	}
 	canal->addUser(user);
 	user.send_msg(get_name() + "332 " + "#" + canal->getName() + " :" + canal->getTopic() + "\n"); 
-	std::cout << YELLOW << "sent to user: " << get_name() + "332 " + "#" + canal->getName() + " :" + canal->getTopic() + "\n";
 	user.send_msg("Canal joined.\n");
 	return 0;
 }

@@ -31,6 +31,8 @@ int Server::handle_command(User& user, char *buf)
 		"PRIVMSG",
 		"USER",
 		"LIST",
+		"PING",
+		"NAMES", //display all users in a channel
 		""
 	} ;
 	command	commands[] = {
@@ -40,6 +42,8 @@ int Server::handle_command(User& user, char *buf)
 		&Server::privmsg,
 		&Server::user,
 		&Server::list,
+		&Server::ping,
+		&Server::names,
 	} ;
 	sep_commands = split(buf, '\n');
 

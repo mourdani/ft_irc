@@ -93,10 +93,6 @@ void Server::run() {
             
 
 
-            std::string msg = get_name() + " 001 " + user.getNickname() + " :Welcome to the Internet Relay Network " + user.getNickname() + "!\n";
-            if (write(client_fd, msg.c_str(), msg.length()) < 0)
-                std::cout << "Error writing to socket\n";
-            std::cout << RED << "sent to client: " << msg << std::endl;
         }
 
         Canal general("#general");
@@ -113,9 +109,17 @@ void Server::run() {
                     fds[i].fd = -1;
                     continue;
                 }
-		std::cout << "Client " << i << " sent: " << buf; 
-
 	    	User	*user = this->get_user(fds[i].fd);
+
+		std::cout << "Client " << i << " sent: " << buf;
+                if (user->getUsername() == "") {
+                    user->setUsername("NewUser");
+                    std::string msg = ":" + get_name() + " 001 " + user->getNickname() + " :Welcome to the Internet Relay Network " + user->getNickname() + "!\n";
+                    if (write(fds[i].fd, msg.c_str(), msg.length()) < 0)
+                        std::cout << "Error writing to socket\n";
+                    std::cout << "Sending: " << msg;
+                }
+
 		if (user == NULL)
 			std::cout << "Something is very wrong\n";
 		else
