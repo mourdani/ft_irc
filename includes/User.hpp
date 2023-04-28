@@ -14,6 +14,7 @@ private:
     std::string _username;
     std::string _realname;
     std::string _hostname;
+	std::string _server_name;
     bool _operator;
     int fd;
 
@@ -48,6 +49,10 @@ public:
     int getFd() const;
 
     void setFd(int fd);
+
+	std::string	getServerName() const;
+
+	void	setServerName(std::string name);
 
     void send_msg(std::string msg);
 

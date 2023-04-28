@@ -7,6 +7,7 @@
 User::User(std::string hostname) {
     _nickname = "";
 	_realname = "";
+	_username = "";
     _hostname = hostname;
 }
 
@@ -93,7 +94,17 @@ int User::getFd() const {
 }
 
 void User::setFd(int fd) {
-    User::fd = fd;
+    this->fd = fd;
+}
+
+std::string	User::getServerName() const
+{
+	return _server_name;
+}
+
+void	User::setServerName(std::string name)
+{
+	_server_name = name;
 }
 
 void User::send_msg(std::string msg) {
@@ -106,11 +117,13 @@ void	User::send_code(std::string code, std::string msg)
 {
 	std::string	reply;
 	
-	reply = ":localhost ";
+	reply = ":";
+	reply.append(getServerName());
+	reply.append(" ");
 	reply.append(code);
 	reply.append(" ");
 	reply.append(getNickname());
-	reply.append(" ");
+	reply.append(" :");
 	reply.append(msg);
 	reply.append("\n");
 	send_msg(reply);

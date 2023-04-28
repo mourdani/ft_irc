@@ -1,6 +1,16 @@
 #include "Server.hpp"
 #include <algorithm>
 
+Server::~Server() {
+	close(socketfd);
+	std::map<int, User *>::iterator	user;
+	for (user = users.begin(); user != users.end(); user++)
+		delete user->second;
+	std::map<std::string, Canal *>::iterator	canal;
+	for (canal = canals.begin(); canal != canals.end(); canal++)
+		delete canal->second;	
+}
+
 int Server::init() {
     struct addrinfo *result;
     
@@ -63,6 +73,9 @@ void Server::run() {
     int nfds = 1;
     int timeout = 1000;
 
+
+	Canal *general = new Canal("#general");
+	add_canal(general);
     fds[0].fd = this->socketfd;
     fds[0].events = POLLIN;
     while (1) {
@@ -86,15 +99,12 @@ void Server::run() {
             fds[nfds].events = POLLIN;
             nfds++;
 
-            User	user(inet_ntoa(client_addr.sin_addr));
-            user.setFd(client_fd);
+            User	*user = new User(inet_ntoa(client_addr.sin_addr));
+            user->setFd(client_fd);
             this->add_user(user);
         }
-
-        Canal general("#general");
-        add_canal(general);
         
-        for (int i = 1; i < nfds; i++) { 
+        for (int i = 1; i < nfds; i++) {
             if (fds[i].revents & POLLIN) {
                 char buf[1024];
                 memset(buf, 0, 1024);
@@ -104,27 +114,18 @@ void Server::run() {
                     close(fds[i].fd);
                     fds[i].fd = -1;
                     continue;
-                }
-	    	User	*user = this->get_user(fds[i].fd);
+				}
+				User	*user = this->get_user(fds[i].fd);
 
-		std::cout << "Client " << i << " sent: " << buf;
-                if (user->getUsername() == "") {
-                    user->setUsername("NewUser");
-                    std::string msg = ":" + get_name() + " 001 " + user->getNickname() + " :Welcome to the Internet Relay Network " + user->getNickname() + "!\n";
-                    if (write(fds[i].fd, msg.c_str(), msg.length()) < 0)
-                        std::cout << "Error writing to socket\n";
-                    std::cout << "Sending: " << msg;
-                }
-
-		if (user == NULL)
-			std::cout << "Something is very wrong\n";
-		else
-		{
-			if (handle_command(*user, buf) == 2)
-				fds[i].fd = -1;
-            
-                }
-                memset(buf, 0, 1024);
+				std::cout << "Client " << i << " sent: " << buf;
+				if (user == NULL)
+					std::cout << "Something is very wrong\n";
+				else
+				{
+					if (handle_command(user, buf) == 2)
+						fds[i].fd = -1;
+				}
+				memset(buf, 0, 1024);
             }
         }
 
@@ -141,7 +142,7 @@ void Server::run() {
 }
 
 bool Server::user_exists(int fd) {
-	std::map<int, User>::iterator it;
+	std::map<int, User *>::iterator it;
 	it = this->users.find(fd);
 	if (it == this->users.end())
 		return 0;
@@ -149,8 +150,8 @@ bool Server::user_exists(int fd) {
 }
 
 bool Server::user_exists(std::string nickname) {
-    for (std::map<int, User>::iterator it = this->users.begin(); it != this->users.end(); ++it)
-        if (it->second.getNickname() == nickname)
+    for (std::map<int, User *>::iterator it = this->users.begin(); it != this->users.end(); ++it)
+        if (it->second->getNickname() == nickname)
             return true;
 
     return false;
@@ -164,11 +165,12 @@ bool Server::canal_exists(std::string canal) {
     return false;
 }
 
-bool Server::add_user(User& user) {
-	if (user_exists(user.getFd()))
+bool Server::add_user(User *user) {
+	if (user_exists(user->getFd()))
 		return false;
-	this->users.insert(std::pair<int, User>(user.getFd(), user));
-	this->_user_ids.insert(std::pair<std::string, int>(user.getNickname(), user.getFd()));
+	user->setServerName(_name);
+	this->users.insert(std::pair<int, User *>(user->getFd(), user));
+	this->_user_ids.insert(std::pair<std::string, int>(user->getNickname(), user->getFd()));
 	return true;
 }
 
@@ -181,11 +183,11 @@ bool Server::add_canal(Canal *canal) {
 }
 
 User *Server::get_user(int fd) {
-	std::map<int, User>::iterator it;
+	std::map<int, User *>::iterator it;
 	it = this->users.find(fd);
 	if (it == this->users.end())
 		return NULL;
-    return &(it->second);
+    return it->second;
 }
 
 User*	Server::get_user(std::string nickname)

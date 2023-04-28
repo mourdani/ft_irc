@@ -35,7 +35,7 @@ const std::string &Canal::getName() const
 	return _name;
 }
 
-std::map<int, User>	Canal::getUsers() const {
+std::map<int, User *>	Canal::getUsers() const {
 	return _users;
 }
 
@@ -51,9 +51,9 @@ bool	Canal::checkUser(int id)
 	return 1;
 }
 
-void	Canal::addUser(User& user)
+void	Canal::addUser(User *user)
 {
-	this->_users.insert(std::pair<int, User>(user.getFd(), user));
+	this->_users.insert(std::pair<int, User *>(user->getFd(), user));
 }
 
 void	Canal::removeUser(User user)

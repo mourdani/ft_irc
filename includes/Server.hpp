@@ -29,7 +29,7 @@ class Server {
 public:
 	Server();
 	Server(int port, std::string password) : port(port), password(password), _name("42_FTIRC") {};
-	~Server() {close(socketfd);};
+	~Server();
 	Server(const Server& other);
 	Server& operator=(const Server& other);
 
@@ -39,24 +39,24 @@ public:
 	bool	user_exists(std::string nickname);
 	bool 	user_exists(int fd);
 	bool	canal_exists(std::string canal);
-	bool	add_user(User& user);
+	bool	add_user(User *user);
 	bool	add_canal(Canal *canal);
 	User*	get_user(int fd);
 	User*	get_user(std::string nickname);
 	Canal*	get_canal(std::string canal);
 
-	int handle_command(User& user, char *buf);
+	int handle_command(User *user, char *buf);
 	std::string	command_reply(int code, std::string reply) const;
 
-	int	join(User& user, std::vector<std::string> args);
-	int	nick(User& user, std::vector<std::string> args);
-	int	user(User& user, std::vector<std::string> args);
-	int	part(User& user, std::vector<std::string> args);
-	int	list(User& user, std::vector<std::string> args);
-	int	privmsg(User& user, std::vector<std::string> args);
-	int	quit(User& user, std::vector<std::string> args);
-	int	ping(User& user, std::vector<std::string> args);
-	int	names(User& user, std::vector<std::string> args);
+	int	join(User *user, std::vector<std::string> args);
+	int	nick(User *user, std::vector<std::string> args);
+	int	user(User *user, std::vector<std::string> args);
+	int	part(User *user, std::vector<std::string> args);
+	int	list(User *user, std::vector<std::string> args);
+	int	privmsg(User *user, std::vector<std::string> args);
+	int	quit(User *user, std::vector<std::string> args);
+	int	ping(User *user, std::vector<std::string> args);
+	int	names(User *user, std::vector<std::string> args);
 
 	//get name
 	std::string get_name() const;
@@ -66,11 +66,11 @@ private:
 	std::string password;
 	int socketfd;
 	std::string _name;
-	std::map<int, User> users;
+	std::map<int, User *> users;
 	std::map<std::string, int> _user_ids;
 	std::map<std::string, Canal *> canals;
 };
 
-typedef	int (Server::*command)(User& user, std::vector<std::string> args);
+typedef	int (Server::*command)(User *user, std::vector<std::string> args);
 
 #endif

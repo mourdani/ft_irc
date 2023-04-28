@@ -43,7 +43,7 @@ std::string	Server::command_reply(int code, std::string reply) const
 }
 
 
-int Server::handle_command(User& user, char *buf)
+int Server::handle_command(User *user, char *buf)
 {
 	std::vector<std::string>	sep_commands;
 	std::vector<std::string>	args;

@@ -13,7 +13,7 @@ class Canal {
 private:
 	std::string _name;
 	std::string _topic;
-	std::map<int, User>	_users;
+	std::map<int, User *>	_users;
 
 public:
     Canal();
@@ -22,7 +22,7 @@ public:
     Canal(const Canal &canal);
 
     const std::string &getName() const;
-	std::map<int, User>	getUsers() const;
+	std::map<int, User *>	getUsers() const;
 
     void setName(const std::string &name);
 
@@ -32,7 +32,7 @@ public:
 
 	bool	checkUser(int id);
 
-	void	addUser(User &user);
+	void	addUser(User *user);
 
 	void	removeUser(User user);
 
