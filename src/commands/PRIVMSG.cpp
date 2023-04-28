@@ -8,11 +8,17 @@ int	Server::privmsg(User& user, std::vector<std::string> args)
 		return 0;
 	}
 	std::string	message;
-	message = user.getNickname();
+	message = args[0];
+	message.append(" ");
+	message.append(user.getNickname());
+	if (args[1][0] == '#')
+	{
+		message.append(" ");
+		message.append(args[1]);
+	}
 	for (unsigned int i = 2; i < args.size(); i ++)
 	{
-		if (i > 2)
-			message.append(" ");
+		message.append(" ");
 		message.append(args[i]);
 	}
 	message.append("\n");
@@ -24,6 +30,7 @@ int	Server::privmsg(User& user, std::vector<std::string> args)
 		{
 			if (!canal->checkUser(user.getFd()))
 			{
+				user.send_code("404", ":Cannot send to channel");
 				user.send_msg("You are not a member of this channel. Use /join.\n");
 				return 0;
 			}
@@ -43,6 +50,6 @@ int	Server::privmsg(User& user, std::vector<std::string> args)
 		dest->send_msg(message);
 		return 0;
 	}
-	user.send_msg(args[1].append(": No such user or channel.\n"));
+	user.send_code("401", ": No such nick/channel");
 	return 0;
 }
