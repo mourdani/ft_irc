@@ -40,7 +40,7 @@ public:
 	bool 	user_exists(int fd);
 	bool	canal_exists(std::string canal);
 	bool	add_user(User& user);
-	bool	add_canal(Canal& canal);
+	bool	add_canal(Canal *canal);
 	User*	get_user(int fd);
 	User*	get_user(std::string nickname);
 	Canal*	get_canal(std::string canal);
@@ -61,7 +61,7 @@ private:
 	int socketfd;
 	std::map<int, User> users;
 	std::map<std::string, int> _user_ids;
-	std::map<std::string, Canal> canals;
+	std::map<std::string, Canal *> canals;
 };
 
 typedef	int (Server::*command)(User& user, std::vector<std::string> args);

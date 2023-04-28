@@ -148,8 +148,8 @@ bool Server::user_exists(std::string nickname) {
 }
 
 bool Server::canal_exists(std::string canal) {
-    for (std::map<std::string, Canal>::iterator it = this->canals.begin(); it != this->canals.end(); ++it)
-        if (it->second.getName() == canal)
+    for (std::map<std::string, Canal *>::iterator it = this->canals.begin(); it != this->canals.end(); ++it)
+        if (it->second->getName() == canal)
             return true;
 
     return false;
@@ -163,10 +163,10 @@ bool Server::add_user(User& user) {
 	return true;
 }
 
-bool Server::add_canal(Canal& canal) {
-    if (canal_exists(canal.getName()))
+bool Server::add_canal(Canal *canal) {
+    if (canal_exists(canal->getName()))
         return false;
-    this->canals.insert(std::pair<std::string, Canal>(canal.getName(), canal));
+    this->canals.insert(std::pair<std::string, Canal *>(canal->getName(), canal));
 
     return true;
 }
@@ -190,8 +190,8 @@ User*	Server::get_user(std::string nickname)
 
 
 Canal *Server::get_canal(std::string canal) {
-	std::map<std::string, Canal>::iterator it = canals.find(canal);
+	std::map<std::string, Canal *>::iterator it = canals.find(canal);
 	if (it == canals.end())
 		return NULL;
-    return &(it->second);
+    return it->second;
 }

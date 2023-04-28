@@ -2,7 +2,7 @@
 
 int	Server::part(User& user, std::vector<std::string> args)
 {
-	std::map<std::string, Canal> canals;
+	std::map<std::string, Canal *> canals;
 	std::map<std::string, Canal>::iterator i;
 	Canal	*canal;
 	//this shouldn't happen
