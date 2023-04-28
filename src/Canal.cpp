@@ -3,13 +3,14 @@
 //
 #include "Canal.hpp"
 
-Canal::Canal()
-{
+Canal::Canal() {
+    _topic = "No topic is set";
+    _name = "No name is set";
 }
 
-Canal::Canal(std::string name)
-{
-	_name = name;
+Canal::Canal(std::string name) {
+    _topic = "No topic is set";
+    _name = name;
 }
 
 Canal::Canal(const Canal &canal)
@@ -60,3 +61,10 @@ void	Canal::removeUser(User user)
 	this->_users.erase(user.getFd());
 }
 
+void Canal::setTopic(const std::string &topic) {
+	_topic = topic;
+}
+
+std::string Canal::getTopic() const {
+	return _topic;
+}

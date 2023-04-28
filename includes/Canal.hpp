@@ -12,6 +12,7 @@
 class Canal {
 private:
 	std::string _name;
+	std::string _topic;
 	std::map<int, User>	_users;
 
 public:
@@ -35,6 +36,8 @@ public:
 
 	void	removeUser(User user);
 
+    void   setTopic(const std::string &topic);
+    std::string getTopic() const;
 };
 
 std::ostream &operator<<(std::ostream &outFile, Canal const &canal);

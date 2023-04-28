@@ -85,36 +85,45 @@ void Server::run() {
             fds[nfds].fd = client_fd;
             fds[nfds].events = POLLIN;
             nfds++;
-			User	user(inet_ntoa(client_addr.sin_addr));
-			user.setFd(client_fd);
-			this->add_user(user);
-            std::cout << "New connection on socket " << client_fd << std::endl;
 
-            std::cout << "hostname: " << inet_ntoa(client_addr.sin_addr) << std::endl;
-
-			user.send_code("001", "Welcome to our IRC server!");
+            User	user(inet_ntoa(client_addr.sin_addr));
+            user.setFd(client_fd);
+            this->add_user(user);
         }
 
-        for (int i = 1; i < nfds; i++) {
+        Canal general("#general");
+        add_canal(general);
+        
+        for (int i = 1; i < nfds; i++) { 
             if (fds[i].revents & POLLIN) {
                 char buf[1024];
                 memset(buf, 0, 1024);
                 int len = recv(fds[i].fd, buf, 1024, MSG_DONTWAIT);
-				std::cout << "Client " << i << " sent: " << buf;
-				User	*user = this->get_user(fds[i].fd);
-				if (user == NULL)
-				{
-					std::cout << "Something is very wrong\n";
-					continue;
-				}
-				if (len == 0) {
+                if (len == 0) {
                     std::cout << "Client " << i << " disconnected" << std::endl;
-                    quit(*user, split(buf, ' '));
+                    close(fds[i].fd);
                     fds[i].fd = -1;
                     continue;
                 }
-				if (handle_command(*user, buf) == 2)
-					fds[i].fd = -1;
+	    	User	*user = this->get_user(fds[i].fd);
+
+		std::cout << "Client " << i << " sent: " << buf;
+                if (user->getUsername() == "") {
+                    user->setUsername("NewUser");
+                    std::string msg = ":" + get_name() + " 001 " + user->getNickname() + " :Welcome to the Internet Relay Network " + user->getNickname() + "!\n";
+                    if (write(fds[i].fd, msg.c_str(), msg.length()) < 0)
+                        std::cout << "Error writing to socket\n";
+                    std::cout << "Sending: " << msg;
+                }
+
+		if (user == NULL)
+			std::cout << "Something is very wrong\n";
+		else
+		{
+			if (handle_command(*user, buf) == 2)
+				fds[i].fd = -1;
+            
+                }
                 memset(buf, 0, 1024);
             }
         }
@@ -194,4 +203,8 @@ Canal *Server::get_canal(std::string canal) {
 	if (it == canals.end())
 		return NULL;
     return it->second;
+}
+
+std::string Server::get_name() const {
+    return this->_name;
 }

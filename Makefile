@@ -10,9 +10,13 @@ SRC			= main.cpp \
 			commands/command_handler.cpp \
 			commands/JOIN.cpp \
 			commands/NICK.cpp \
+			commands/USER.cpp \
 			commands/PART.cpp \
+			commands/LIST.cpp \
 			commands/PRIVMSG.cpp \
-			commands/QUIT.cpp
+			commands/QUIT.cpp \
+			commands/PING.cpp  \
+			commands/NAMES.cpp 
 DEP			= $(OBJS:.o=.d)
 
 # Compiler options

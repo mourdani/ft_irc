@@ -56,6 +56,14 @@ void User::setNickname(const std::string &nickname) {
     _nickname = nickname;
 }
 
+const std::string &User::getUsername() const {
+	return _username;
+}
+
+void User::setUsername(const std::string &username) {
+	_username = username;
+}
+
 const std::string &User::getRealname() const {
     return _realname;
 }

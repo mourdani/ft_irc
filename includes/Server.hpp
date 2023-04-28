@@ -28,7 +28,7 @@ std::vector<std::string>	split(std::string str, char delimiter);
 class Server {
 public:
 	Server();
-	Server(int port, std::string password) : port(port), password(password) {};
+	Server(int port, std::string password) : port(port), password(password), _name("42_FTIRC") {};
 	~Server() {close(socketfd);};
 	Server(const Server& other);
 	Server& operator=(const Server& other);
@@ -50,15 +50,22 @@ public:
 
 	int	join(User& user, std::vector<std::string> args);
 	int	nick(User& user, std::vector<std::string> args);
+	int	user(User& user, std::vector<std::string> args);
 	int	part(User& user, std::vector<std::string> args);
+	int	list(User& user, std::vector<std::string> args);
 	int	privmsg(User& user, std::vector<std::string> args);
 	int	quit(User& user, std::vector<std::string> args);
+	int	ping(User& user, std::vector<std::string> args);
+	int	names(User& user, std::vector<std::string> args);
 
+	//get name
+	std::string get_name() const;
 
 private:
 	int port;
 	std::string password;
 	int socketfd;
+	std::string _name;
 	std::map<int, User> users;
 	std::map<std::string, int> _user_ids;
 	std::map<std::string, Canal *> canals;

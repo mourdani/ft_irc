@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "colors.hpp"
 #include <vector>
 
 std::vector<std::string>	split(std::string str, char delimiter)
@@ -52,6 +53,10 @@ int Server::handle_command(User& user, char *buf)
 		"PART",
 		"PRIVMSG",
 		"QUIT",
+		"USER",
+		"LIST",
+		"PING",
+		"NAMES", //display all users in a channel
 		""
 	} ;
 	command	commands[] = {
@@ -60,17 +65,28 @@ int Server::handle_command(User& user, char *buf)
 		&Server::part,
 		&Server::privmsg,
 		&Server::quit,
+		&Server::user,
+		&Server::list,
+		&Server::ping,
+		&Server::names,
 	} ;
 	sep_commands = split(buf, '\n');
+
 	for (std::vector<std::string>::iterator i = sep_commands.begin(); i != sep_commands.end(); i++)
 	{
-		args = split(*i, ' ');
+		args = split(*i, ' '); 
 		if (args.size() == 0)
 			continue ;
-		for (int j = 0; command_names[j].size(); j++)
+		for (int j = 0; command_names[j].size(); j++) 
 		{
 			if (args[0].compare(command_names[j]) == 0)
-				return (this->*commands[j])(user, args);
+			{
+				int command_ret;
+				command_ret = (this->*commands[j])(user, args);
+				if (i != sep_commands.end())
+					continue;
+				return (command_ret);
+			}
 		}
 	}
 	return 0;
