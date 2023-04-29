@@ -19,11 +19,13 @@
 #include "User.hpp"
 #include "Canal.hpp"
 #include "colors.hpp"
+#include <csignal>
 
 #define MAX_CLIENTS 50
 #define MAX_CANALS 5
 
 std::vector<std::string>	split(std::string str, char delimiter);
+void handle_sigint(int sig);
 
 class Server {
 public:
@@ -32,6 +34,7 @@ public:
 	~Server();
 	Server(const Server& other);
 	Server& operator=(const Server& other);
+
 
 	int init();
 	void run();
@@ -44,8 +47,13 @@ public:
 	User*	get_user(int fd);
 	User*	get_user(std::string nickname);
 	Canal*	get_canal(std::string canal);
+	int	getSocketfd() const { return socketfd; }
+	int	get_port() const;
 
-	int handle_command(User *user, char *buf);
+	std::map<int, User *>	get_users() const;
+	
+
+	int	handle_command(User *user, char *buf);
 	std::string	command_reply(int code, std::string reply) const;
 
 	int	join(User *user, std::vector<std::string> args);

@@ -53,7 +53,10 @@ int Server::init() {
         }
 
         if (result == NULL) {
-            std::cerr << "Could not bind" << std::endl;
+            std::cerr << RED << "Could not bind to port [" << get_port();
+            std::cerr << "] address already in use" << std::endl;
+            std::cerr << "Use another port or wait for the port to close correctly." << std::endl;
+            std::cerr << "To check port state:  netstat -an | grep " << get_port() << RESET << std::endl;
             throw std::exception();
         }
 
@@ -114,18 +117,18 @@ void Server::run() {
                     close(fds[i].fd);
                     fds[i].fd = -1;
                     continue;
-				}
-				User	*user = this->get_user(fds[i].fd);
-
-				std::cout << "Client " << i << " sent: " << buf;
-				if (user == NULL)
-					std::cout << "Something is very wrong\n";
-				else
-				{
-					if (handle_command(user, buf) == 2)
-						fds[i].fd = -1;
-				}
-				memset(buf, 0, 1024);
+                }
+            User	*user = this->get_user(fds[i].fd);
+        
+            std::cout << "Client " << i << " sent: " << buf;
+            if (user == NULL)
+            	std::cout << "Something is very wrong\n";
+            else
+            {
+                if (handle_command(user, buf) == 2)
+                	fds[i].fd = -1;
+           }
+           memset(buf, 0, 1024);
             }
         }
 
@@ -209,4 +212,12 @@ Canal *Server::get_canal(std::string canal) {
 
 std::string Server::get_name() const {
     return this->_name;
+}
+
+std::map<int, User *> Server::get_users() const {
+    return this->users;
+}
+
+int Server::get_port() const {
+    return this->port;
 }
