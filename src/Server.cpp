@@ -1,22 +1,10 @@
 #include "Server.hpp"
 #include <algorithm>
 
-Server::~Server() {
-	close(socketfd);
-	std::map<int, User *>::iterator	user;
-	for (user = users.begin(); user != users.end(); user++)
-		delete user->second;
-	std::map<std::string, Canal *>::iterator	canal;
-	for (canal = canals.begin(); canal != canals.end(); canal++)
-		delete canal->second;	
-}
-
-int Server::init() {
-    struct addrinfo *result;
-    
+Server::Server(int port, std::string password) : port(port), password(password), _name("42_FT_IRC") {
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints)); // Initialize hints struct to zero
-// 
+    //
     hints.ai_family = AF_INET;       /* Allow IPv6 */
     hints.ai_socktype = SOCK_STREAM;  /* Stream socket */
     hints.ai_flags = AI_PASSIVE;      /* For wildcard IP address */
@@ -26,33 +14,53 @@ int Server::init() {
     std::string port_str = ss.str();
     const char *port_char = port_str.c_str();
 
-    if (getaddrinfo(NULL, port_char, &hints, &result) != 0) {
-        std::cerr << "Failed to get address information." << std::endl;
-        throw std::exception();
+    if (getaddrinfo(NULL, port_char, &hints, &socket_info) != 0) {
+        std::cerr << "Error: getaddrinfo" << std::endl;
+        exit(1);
     }
-    
+}
+
+Server::~Server() {
+        // close client sockets
+    std::map<int, User *>::iterator it = users.begin();
+    while (it != users.end()) {
+        close(it->first); 
+        it++;
+    }
+        
+    close(socketfd);
+
+    std::map<int, User *>::iterator	user;
+    for (user = users.begin(); user != users.end(); user++)
+    	delete user->second;
+    std::map<std::string, Canal *>::iterator	canal;
+    for (canal = canals.begin(); canal != canals.end(); canal++)
+    	delete canal->second;	
+}
+
+int Server::init() {
     try {
-        while (result != NULL) {
-            this->socketfd = socket(result->ai_family,
-                              result->ai_socktype,
-                              result->ai_protocol);
+        while (socket_info != NULL) { 
+            this->socketfd = socket(socket_info->ai_family,
+                              socket_info->ai_socktype,
+                              socket_info->ai_protocol);
 
             if (this->socketfd == -1) {
-                result = result->ai_next; // Try next address
+                socket_info = socket_info->ai_next; // Try next address
                 continue;
             }
 
-            if (bind(this->socketfd, result->ai_addr, result->ai_addrlen) == 0) {
+            if (bind(this->socketfd, socket_info->ai_addr, socket_info->ai_addrlen) == 0) {
                 std::cout << "Server listening on port " \
                     << GREEN << port << RESET << std::endl;
                 break;
             }
 
             close(this->socketfd); // Close socket if bind fails
-            result = result->ai_next; // Try next address
+            socket_info = socket_info->ai_next; // Try next address
         }
 
-        if (result == NULL) {
+        if (socket_info == NULL) {
             std::cerr << RED << "Could not bind to port [" << get_port();
             std::cerr << "] address already in use" << std::endl;
             std::cerr << "Use another port or wait for the port to close correctly." << std::endl;

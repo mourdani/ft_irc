@@ -4,23 +4,12 @@
 #include <stdlib.h>
 
 Server *server_ptr;
+
 void handle_sigint(int sig) {
     (void)sig;
 
-    std::cout << std::endl << "Disconnecting clients... " << server_ptr->get_users().size() << " available" << std::endl;
-    for (long unsigned int i = 0; i < server_ptr->get_users().size(); i++)
-    {
-        std::map<int, User *>::iterator it = server_ptr->get_users().begin();
-        if (it->second->getFd() != -1)
-            close(it->second->getFd());
-        server_ptr->get_users().erase(it);
-
-    }
-
-    if (server_ptr->getSocketfd() != -1)
-        close(server_ptr->getSocketfd());
-
-    std::cout << "Exiting..." << std::endl;
+    server_ptr->~Server();
+    std::cout << std::endl << "Server closed" << std::endl;
     exit(0);
 
 }

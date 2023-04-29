@@ -29,8 +29,7 @@ void handle_sigint(int sig);
 
 class Server {
 public:
-	Server();
-	Server(int port, std::string password) : port(port), password(password), _name("42_FTIRC") {};
+	Server(int port, std::string password);
 	~Server();
 	Server(const Server& other);
 	Server& operator=(const Server& other);
@@ -77,6 +76,10 @@ private:
 	std::map<int, User *> users;
 	std::map<std::string, int> _user_ids;
 	std::map<std::string, Canal *> canals;
+	struct addrinfo *socket_info;
+
+
+	Server();
 };
 
 typedef	int (Server::*command)(User *user, std::vector<std::string> args);
