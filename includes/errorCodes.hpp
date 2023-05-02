@@ -1,7 +1,6 @@
 #ifndef ERROR_CODES_HPP
 # define ERROR_CODES_HPP
 
-#define RPL_LIST "322"
 #define RPL_TOPIC "332"
 #define RPL_NAMREPLY "353"
 #define RPL_ENDOFNAMES "366"
