@@ -4,17 +4,20 @@
 #include "Canal.hpp"
 
 Canal::Canal() {
-    _topic = "No topic is set";
+    _topic = "";
+	_chanop = NULL;
     _name = "No name is set";
 }
 
 Canal::Canal(std::string name) {
-    _topic = "No topic is set";
+    _topic = "";
+	_chanop = NULL;
     _name = name;
 }
 
 Canal::Canal(const Canal &canal)
 {
+	_chanop = NULL;
 	*this = canal;
 }
 
@@ -51,6 +54,16 @@ bool	Canal::checkUser(int id)
 	return 1;
 }
 
+void	Canal::setChanop(User *user)
+{
+	_chanop = user;
+}
+
+User	*Canal::getChanop()
+{
+	return _chanop;
+}
+
 void	Canal::addUser(User *user)
 {
 	this->_users.insert(std::pair<int, User *>(user->getFd(), user));
@@ -60,6 +73,12 @@ void	Canal::removeUser(User user)
 {
 	this->_users.erase(user.getFd());
 }
+
+void	Canal::removeUser(int id)
+{
+	this->_users.erase(id);
+}
+
 
 void Canal::setTopic(const std::string &topic) {
 	_topic = topic;

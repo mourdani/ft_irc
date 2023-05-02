@@ -20,12 +20,16 @@
 #include "Canal.hpp"
 #include "colors.hpp"
 #include <csignal>
+#include "errorCodes.hpp"
 
 #define MAX_CLIENTS 50
 #define MAX_CANALS 5
 
 std::vector<std::string>	split(std::string str, char delimiter);
 void handle_sigint(int sig);
+
+#define QUIT 2
+#define KILL 3
 
 class Server {
 public:
@@ -36,7 +40,7 @@ public:
 
 
 	int init();
-	void run();
+	int run();
 
 	bool	user_exists(std::string nickname);
 	bool 	user_exists(int fd);
@@ -45,6 +49,7 @@ public:
 	bool	add_canal(Canal *canal);
 	User*	get_user(int fd);
 	User*	get_user(std::string nickname);
+	int		get_id(std::string nickname);
 	Canal*	get_canal(std::string canal);
 	int	getSocketfd() const { return socketfd; }
 	int	get_port() const;
@@ -64,6 +69,10 @@ public:
 	int	quit(User *user, std::vector<std::string> args);
 	int	ping(User *user, std::vector<std::string> args);
 	int	names(User *user, std::vector<std::string> args);
+	int	oper(User *user, std::vector<std::string> args);
+	int	kill(User *user, std::vector<std::string> args);
+	int	topic(User *user, std::vector<std::string> args);
+	int	kick(User *user, std::vector<std::string> args);
 
 	//get name
 	std::string get_name() const;

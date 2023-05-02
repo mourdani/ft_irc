@@ -7,6 +7,7 @@
 
 #include <string>
 #include <unistd.h>
+#include <list>
 
 class User {
 private:
@@ -17,6 +18,7 @@ private:
 	std::string _server_name;
     bool _operator;
     int fd;
+	std::list<std::string>	canals;
 
 public:
     User();
@@ -53,6 +55,8 @@ public:
 	std::string	getServerName() const;
 
 	void	setServerName(std::string name);
+
+	std::string	prefix();
 
     void send_msg(std::string msg);
 

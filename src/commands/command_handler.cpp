@@ -57,6 +57,9 @@ int Server::handle_command(User *user, char *buf)
 		"LIST",
 		"PING",
 		"NAMES", //display all users in a channel
+		"OPER",
+		"TOPIC",
+		"KICK",
 		""
 	} ;
 	command	commands[] = {
@@ -69,6 +72,9 @@ int Server::handle_command(User *user, char *buf)
 		&Server::list,
 		&Server::ping,
 		&Server::names,
+		&Server::oper,
+		&Server::topic,
+		&Server::kick,
 	} ;
 	sep_commands = split(buf, '\n');
 
@@ -83,9 +89,8 @@ int Server::handle_command(User *user, char *buf)
 			{
 				int command_ret;
 				command_ret = (this->*commands[j])(user, args);
-				if (i != sep_commands.end())
-					continue;
-				return (command_ret);
+				if (command_ret)
+					return command_ret;
 			}
 		}
 	}

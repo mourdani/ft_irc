@@ -29,13 +29,15 @@ Server::~Server() {
     }
         
     close(socketfd);
-
+	freeaddrinfo(socket_info);
     std::map<int, User *>::iterator	user;
     for (user = users.begin(); user != users.end(); user++)
     	delete user->second;
     std::map<std::string, Canal *>::iterator	canal;
     for (canal = canals.begin(); canal != canals.end(); canal++)
-    	delete canal->second;	
+	{
+    	delete canal->second;
+	}
 }
 
 int Server::init() {
@@ -79,7 +81,7 @@ int Server::init() {
 	return 0;
 }
 
-void Server::run() {
+int Server::run() {
     struct pollfd fds[MAX_CLIENTS];
     int nfds = 1;
     int timeout = 1000;
@@ -126,17 +128,21 @@ void Server::run() {
                     fds[i].fd = -1;
                     continue;
                 }
-            User	*user = this->get_user(fds[i].fd);
-        
-            std::cout << "Client " << i << " sent: " << buf;
-            if (user == NULL)
-            	std::cout << "Something is very wrong\n";
-            else
-            {
-                if (handle_command(user, buf) == 2)
-                	fds[i].fd = -1;
-           }
-           memset(buf, 0, 1024);
+
+				User	*user = this->get_user(fds[i].fd);
+			
+				std::cout << "Client " << i << " sent: " << buf;
+				if (user == NULL)
+					std::cout << "Something is very wrong\n";
+				else
+				{
+					int	ret = handle_command(user, buf);
+					if (ret == QUIT)
+						fds[i].fd = -1;
+					if (ret == KILL)
+						return KILL;
+				}
+				memset(buf, 0, 1024);
             }
         }
 
@@ -150,6 +156,7 @@ void Server::run() {
             }
         }
     }
+	return 0;
 }
 
 bool Server::user_exists(int fd) {
@@ -208,6 +215,15 @@ User*	Server::get_user(std::string nickname)
 	if (it == _user_ids.end())
 		return NULL;
 	return (get_user(it->second));
+}
+
+int		Server::get_id(std::string nickname)
+{
+	std::map<std::string, int>::iterator it;
+	it = _user_ids.find(nickname);
+	if (it == _user_ids.end())
+		return -1;
+	return it->second;
 }
 
 

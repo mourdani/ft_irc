@@ -6,15 +6,15 @@ int Server::user(User *user, std::vector<std::string> args)
 		return 0;
 	for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); it++)
 	{
-		if (user->getUsername().compare(args[1]) == 0)
+		if (it->second->getUsername().compare(args[1]) == 0)
 		{
-			user->send_code("462", "Unauthorized command (already registered)");
+			user->send_code(ERR_ALREADYREGISTRED, args[1] + " " + "Unauthorized command (already registered)");
 			return 1;
 		}
 	}
 	user->setUsername(args[1]);
 	user->send_msg("Username set to " + args[1] + "\n");
-	user->send_code("001", "Welcome to our iRC serv!");
+	user->send_code(RPL_WELCOME, "Welcome to our iRC serv!");
 	std::vector<std::string>	args2;
 	args2.push_back("JOIN");
 	args2.push_back("#general");

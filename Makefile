@@ -16,7 +16,11 @@ SRC			= main.cpp \
 			commands/PRIVMSG.cpp \
 			commands/QUIT.cpp \
 			commands/PING.cpp  \
-			commands/NAMES.cpp 
+			commands/NAMES.cpp \
+			commands/KILL.cpp \
+			commands/TOPIC.cpp \
+			commands/KICK.cpp \
+			commands/OPER.cpp
 DEP			= $(OBJS:.o=.d)
 
 # Compiler options

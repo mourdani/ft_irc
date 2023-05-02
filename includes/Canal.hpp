@@ -14,6 +14,7 @@ private:
 	std::string _name;
 	std::string _topic;
 	std::map<int, User *>	_users;
+	User	*_chanop;
 
 public:
     Canal();
@@ -30,11 +31,17 @@ public:
 
     Canal &operator=(const Canal &canal);
 
+	void	setChanop(User *user);
+
+	User	*getChanop();
+
 	bool	checkUser(int id);
 
 	void	addUser(User *user);
 
 	void	removeUser(User user);
+
+	void	removeUser(int id);
 
     void   setTopic(const std::string &topic);
     std::string getTopic() const;

@@ -7,7 +7,7 @@ int	Server::nick(User *user, std::vector<std::string> args)
 		return 1;
 	if (get_user(args[1]) != NULL)
 	{
-		user->send_code("443", args[1].append(" :Nickname is already in use.\n"));
+		user->send_code(ERR_USERONCHANNEL, args[1].append(" :Nickname is already in use.\n"));
 		return 1;
 	}
 	_user_ids.erase(user->getNickname());
@@ -15,7 +15,7 @@ int	Server::nick(User *user, std::vector<std::string> args)
 	pair.first = args[1];
 	pair.second = user->getFd();
 	_user_ids.insert(std::pair<std::string, int>(args[1], user->getFd()));
+	user->send_msg(user->prefix() + " NICK " + args[1] + "\r\n");
 	user->setNickname(args[1]);
-	user->send_msg("Nickname set to " + args[1] + ".\n");
 	return 0;
 }

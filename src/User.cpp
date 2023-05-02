@@ -3,18 +3,22 @@
 //
 #include "User.hpp"
 #include <iostream>
+#include "errorCodes.hpp"
 
 User::User(std::string hostname) {
     _nickname = "";
 	_realname = "";
 	_username = "";
     _hostname = hostname;
+	_operator = 0;
 }
 
 User::User(std::string nickname, std::string realname, std::string hostname) {
     _nickname = nickname;
     _realname = realname;
+	_username = "";
     _hostname = hostname;
+	_operator = 0;
 }
 
 User::User() {
@@ -107,6 +111,11 @@ void	User::setServerName(std::string name)
 	_server_name = name;
 }
 
+std::string	User::prefix()
+{
+	return ":" + _nickname + "!" + _username + "@" + _server_name;
+}
+
 void User::send_msg(std::string msg) {
 	std::cout << "sending: \"" << msg << "\" to user " << _nickname << std::endl;
     write(fd, msg.c_str(), msg.length());
@@ -120,11 +129,16 @@ void	User::send_code(std::string code, std::string msg)
 	reply = ":";
 	reply.append(getServerName());
 	reply.append(" ");
-	reply.append(code);
-	reply.append(" ");
+	if (code.size())
+	{
+		reply.append(code);
+		reply.append(" ");
+	}
 	reply.append(getNickname());
-	reply.append(" :");
+	reply.append(" ");
+	if (code.compare(RPL_LIST))
+		reply.append(":");
 	reply.append(msg);
-	reply.append("\n");
+	reply.append("\r\n");
 	send_msg(reply);
 }

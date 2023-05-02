@@ -11,12 +11,17 @@ int	Server::join(User *user, std::vector<std::string> args)
 	channels = split(args[1], ',');
 	for (std::vector<std::string>::iterator name = channels.begin(); name != channels.end(); name ++)
 	{
+		if ((*name)[0] != '#')
+		{
+			user->send_code(ERR_BADCHANMASK, *name + " " + ":Bad Channel Mask");
+			continue;
+		}
 		Canal	*canal = get_canal(*name);
-		(void)user;
 		if (!canal)
 		{
 			Canal	*new_canal = new Canal(*name);
 			add_canal(new_canal);
+			new_canal->setChanop(user);
 			canal = new_canal;
 		}
 		if (canal->checkUser(user->getFd()))
@@ -34,7 +39,7 @@ int	Server::join(User *user, std::vector<std::string> args)
 
 			message = *name;
 			message.append(" :").append(canal->getTopic()); //append canal description
-			user->send_code("332", message);
+			user->send_code(RPL_TOPIC, message);
 			std::string	user_list;
 			message = "= ";
 			message.append(*name).append(" :@");
@@ -45,10 +50,10 @@ int	Server::join(User *user, std::vector<std::string> args)
 				if (++canal_user != users.end())
 					message.append(" ");
 			}
-			user->send_code("353", message);
+			user->send_code(RPL_NAMREPLY, message);
 			message = *name;
 			message.append(" :End of NAMES list");
-			user->send_code("366", message);
+			user->send_code(RPL_ENDOFNAMES, message);
 		}
 	}
 	return 0;

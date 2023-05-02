@@ -21,6 +21,16 @@ int exit_error(std::string error)
     return (1);
 }
 
+int	launch_server(int port, char *pw)
+{
+    Server server(port, pw);
+    server_ptr = &server;
+    signal(SIGINT, handle_sigint);
+    if (server.init())
+		return 1;
+	return server.run();
+}
+
 int main(int ac, char **av) {
     if (ac != 3)
         return exit_error("Usage : ircserv <port> <password>");
@@ -32,16 +42,8 @@ int main(int ac, char **av) {
         return exit_error("Error : port incorect");
 
     int port = atoi(av[1]);
+	if (port <= 0 || port > 65535)
+		return exit_error("Error : port outside [0, 65535]");
 
-    if (port <= 0 || port > 65535)
-        return exit_error("Error : port outside [0, 65535]");
-
-    Server server(port, av[2]);
-    server_ptr = &server;
-    signal(SIGINT, handle_sigint);
-    if (server.init())
-		return 1;
-    server.run();
-
-    return 1;
+	return launch_server(port, av[2]);
 }
