@@ -1,8 +1,6 @@
 #include "Server.hpp"
 
 int	Server::names(User *user, std::vector<std::string> args){
-	if (user->isRegistered() == false)
-		return (user->send_code(ERR_NOTREGISTERED, ":You have not registered"), 1);
 	std::string names;
 	std::map<int, User *>::iterator it = users.begin();
 
