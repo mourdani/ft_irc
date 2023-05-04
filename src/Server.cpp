@@ -1,7 +1,7 @@
 #include "Server.hpp"
 #include <algorithm>
 
-Server::Server(int port, std::string password) : port(port), password(password), _name("42_FT_IRC") {
+Server::Server(int port, std::string password) : port(port), _password(password), _name("42_FT_IRC") {
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints)); // Initialize hints struct to zero
     //
@@ -16,6 +16,7 @@ Server::Server(int port, std::string password) : port(port), password(password),
 
     if (getaddrinfo(NULL, port_char, &hints, &socket_info) != 0) {
         std::cerr << "Error: getaddrinfo" << std::endl;
+        freeaddrinfo(socket_info);
         exit(1);
     }
 }
@@ -128,21 +129,21 @@ int Server::run() {
                     fds[i].fd = -1;
                     continue;
                 }
-
-				User	*user = this->get_user(fds[i].fd);
+	        
+                User	*user = this->get_user(fds[i].fd);
 			
-				std::cout << "Client " << i << " sent: " << buf;
-				if (user == NULL)
-					std::cout << "Something is very wrong\n";
-				else
-				{
-					int	ret = handle_command(user, buf);
-					if (ret == QUIT)
-						fds[i].fd = -1;
-					if (ret == KILL)
-						return KILL;
-				}
-				memset(buf, 0, 1024);
+		std::cout << "Client " << i << " sent: " << buf;
+		if (user == NULL)
+			std::cout << "Something is very wrong\n";
+               	else
+		{
+			int	ret = handle_command(user, buf);
+			if (ret == QUIT)
+				fds[i].fd = -1;
+			if (ret == KILL)
+				return KILL;
+		}
+		memset(buf, 0, 1024);
             }
         }
 
@@ -244,4 +245,8 @@ std::map<int, User *> Server::get_users() const {
 
 int Server::get_port() const {
     return this->port;
+}
+
+std::string Server::get_password() const {
+    return this->_password;
 }

@@ -11,6 +11,8 @@ User::User(std::string hostname) {
 	_username = "";
     _hostname = hostname;
 	_operator = 0;
+    _pass = "";
+    _registered = false;
 }
 
 User::User(std::string nickname, std::string realname, std::string hostname) {
@@ -19,6 +21,8 @@ User::User(std::string nickname, std::string realname, std::string hostname) {
 	_username = "";
     _hostname = hostname;
 	_operator = 0;
+    _pass = "";
+    _registered = false;
 }
 
 User::User() {
@@ -34,7 +38,8 @@ User &User::operator=(const User &user) {
     this->_nickname = user._nickname;
     this->_operator = user._operator;
     this->_realname = user._realname;
-	this->fd = user.fd;
+    this->fd = user.fd;
+    this->_registered = user._registered;
 
     return *this;
 }
@@ -93,6 +98,14 @@ void User::setOperator(bool op) {
     _operator = op;
 }
 
+void User::setRegistered(bool registered) {
+	_registered = registered;
+}
+
+bool User::isRegistered() const {
+	return _registered; 
+}
+
 int User::getFd() const {
     return fd;
 }
@@ -101,6 +114,13 @@ void User::setFd(int fd) {
     this->fd = fd;
 }
 
+const std::string &User::getPass() const {
+	return _pass;
+}
+
+void User::setPass(const std::string &pass) {
+	_pass = pass;
+}
 std::string	User::getServerName() const
 {
 	return _server_name;
@@ -121,7 +141,7 @@ void User::send_msg(std::string msg) {
     write(fd, msg.c_str(), msg.length());
 
 }
-#include <iostream>
+
 void	User::send_code(std::string code, std::string msg)
 {
 	std::string	reply;
@@ -141,4 +161,14 @@ void	User::send_code(std::string code, std::string msg)
 	reply.append(msg);
 	reply.append("\r\n");
 	send_msg(reply);
+}
+
+int	User::send_unregistered_code(void)
+{
+    if (this->isRegistered() == false)
+    {	
+    	this->send_code(ERR_NOTREGISTERED, "You have not registered\r\n");
+	return 1;
+    }	
+    return 0;
 }

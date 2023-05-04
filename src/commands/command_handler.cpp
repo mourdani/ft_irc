@@ -42,24 +42,25 @@ std::string	Server::command_reply(int code, std::string reply) const
 	return (str);
 }
 
-
 int Server::handle_command(User *user, char *buf)
 {
+
 	std::vector<std::string>	sep_commands;
 	std::vector<std::string>	args;
 	std::string	command_names[] = {
-		"JOIN",
-		"NICK",
-		"PART",
-		"PRIVMSG",
-		"QUIT",
-		"USER",
-		"LIST",
-		"PING",
+		"JOIN", //join a channel
+		"NICK", //change nickname
+		"PART",	//leave a channel
+		"PRIVMSG", //send a message to a user or channel
+		"QUIT", //disconnect from the server
+		"USER", //set username
+		"LIST", //list all channels
+		"PING", //ping the server
 		"NAMES", //display all users in a channel
-		"OPER",
-		"TOPIC",
-		"KICK",
+		"OPER", //set user as operator
+		"TOPIC", //set topic of a channel
+		"KICK", //kick a user from a channel
+		"PASS", //set password
 		""
 	} ;
 	command	commands[] = {
@@ -75,6 +76,7 @@ int Server::handle_command(User *user, char *buf)
 		&Server::oper,
 		&Server::topic,
 		&Server::kick,
+		&Server::pass,
 	} ;
 	sep_commands = split(buf, '\n');
 
@@ -87,10 +89,25 @@ int Server::handle_command(User *user, char *buf)
 		{
 			if (args[0].compare(command_names[j]) == 0)
 			{
-				int command_ret;
-				command_ret = (this->*commands[j])(user, args);
-				if (command_ret)
-					return command_ret;
+				if (user->isRegistered() == true) 
+				{
+					int command_ret;
+					command_ret = (this->*commands[j])(user, args);
+					if (command_ret)
+						return command_ret;
+				}
+				else if (args[0].compare("PASS") == 0)
+				{
+					int command_ret;
+					command_ret = (this->*commands[j])(user, args);
+					if (command_ret)
+						return command_ret;
+				}
+				else
+				{
+					user->send_code(ERR_NOTREGISTERED, " :You are not registered\r\n");
+					return 1;
+				}
 			}
 		}
 	}

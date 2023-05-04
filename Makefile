@@ -20,7 +20,8 @@ SRC			= main.cpp \
 			commands/KILL.cpp \
 			commands/TOPIC.cpp \
 			commands/KICK.cpp \
-			commands/OPER.cpp
+			commands/OPER.cpp \
+			commands/PASS.cpp 
 DEP			= $(OBJS:.o=.d)
 
 # Compiler options

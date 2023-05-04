@@ -47,12 +47,14 @@ public:
 	bool	canal_exists(std::string canal);
 	bool	add_user(User *user);
 	bool	add_canal(Canal *canal);
+
 	User*	get_user(int fd);
 	User*	get_user(std::string nickname);
 	int		get_id(std::string nickname);
 	Canal*	get_canal(std::string canal);
 	int	getSocketfd() const { return socketfd; }
 	int	get_port() const;
+	std::string	get_password() const;
 
 	std::map<int, User *>	get_users() const;
 	
@@ -73,13 +75,14 @@ public:
 	int	kill(User *user, std::vector<std::string> args);
 	int	topic(User *user, std::vector<std::string> args);
 	int	kick(User *user, std::vector<std::string> args);
+	int	pass(User *user, std::vector<std::string> args);
 
 	//get name
 	std::string get_name() const;
 
 private:
 	int port;
-	std::string password;
+	std::string _password;
 	int socketfd;
 	std::string _name;
 	std::map<int, User *> users;

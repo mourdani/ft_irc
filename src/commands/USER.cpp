@@ -14,7 +14,6 @@ int Server::user(User *user, std::vector<std::string> args)
 	}
 	user->setUsername(args[1]);
 	user->send_msg("Username set to " + args[1] + "\n");
-	user->send_code(RPL_WELCOME, "Welcome to our iRC serv!");
 	std::vector<std::string>	args2;
 	args2.push_back("JOIN");
 	args2.push_back("#general");

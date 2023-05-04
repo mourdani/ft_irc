@@ -17,56 +17,47 @@ private:
     std::string _hostname;
 	std::string _server_name;
     bool _operator;
+    std::string _pass;
+    bool _registered;
     int fd;
 	std::list<std::string>	canals;
 
 public:
     User();
     User(std::string hostname);
-
     User(std::string nickname, std::string realname, std::string hostname);
-
     User(const User &user);
-
-    const std::string &getNickname() const;
-
-    void setNickname(const std::string &nickname);
-
-    const std::string &getUsername() const;
-
-    void setUsername(const std::string &username);
-
-    const std::string &getRealname() const;
-
-    void setRealname(const std::string &realname);
-
-    const std::string &getHostname() const;
-
-    void setHostname(const std::string &hostname);
-
-    bool isOperator() const;
-
-    void setOperator(bool);
-
-    int getFd() const;
-
-    void setFd(int fd);
-
-	std::string	getServerName() const;
-
-	void	setServerName(std::string name);
-
-	std::string	prefix();
-
-    void send_msg(std::string msg);
-
-	void	send_code(std::string code, std::string msg);
-
     virtual ~User();
-
     User &operator=(const User &user);
     bool	operator==(const User &user);
     bool	operator!=(const User &user);
+
+
+    const std::string &getNickname() const;
+    const std::string &getUsername() const;
+    const std::string &getRealname() const;
+    const std::string &getHostname() const;
+    std::string	getServerName() const;
+    int getFd() const;
+    const std::string &getPass() const;
+    bool isRegistered() const;
+
+    void setNickname(const std::string &nickname);
+    void setUsername(const std::string &username);
+    void setRealname(const std::string &realname);
+    void setHostname(const std::string &hostname);
+    bool isOperator() const;
+    void setOperator(bool);
+    void setFd(int fd);
+    void	setServerName(std::string name);
+    void setPass(const std::string &pass);
+    void setRegistered(bool registered);
+
+    std::string	prefix();
+
+    void send_msg(std::string msg);
+    void send_code(std::string code, std::string msg);
+    int send_unregistered_code();
 };
 
 std::ostream &operator<<(std::ostream &outFile, User const &user);

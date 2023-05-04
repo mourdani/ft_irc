@@ -1,10 +1,12 @@
 #include "Server.hpp"
 
 int	Server::names(User *user, std::vector<std::string> args){
+	if (user->isRegistered() == false)
+		return (user->send_code(ERR_NOTREGISTERED, ":You have not registered"), 1);
 	std::string names;
 	std::map<int, User *>::iterator it = users.begin();
 
-	if (args[1].find_first_not_of("0123456789") == std::string::npos) // hexchat sends port number as arg if channel not mentioned
+	if (args[1].find_first_not_of("0123456789") == std::string::npos) 
 	{
 		while (it != users.end())
 		{
