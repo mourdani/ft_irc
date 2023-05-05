@@ -3,87 +3,83 @@
 
 Server::Server(int port, std::string password) : port(port), _password(password), _name("42_FT_IRC") {
     struct addrinfo hints;
-    memset(&hints, 0, sizeof(hints)); // Initialize hints struct to zero
-    //
-    hints.ai_family = AF_INET;       /* Allow IPv6 */
-    hints.ai_socktype = SOCK_STREAM;  /* Stream socket */
-    hints.ai_flags = AI_PASSIVE;      /* For wildcard IP address */
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
 
     std::stringstream ss;
-    ss << port;
+    ss << this->port;
     std::string port_str = ss.str();
-    const char *port_char = port_str.c_str();
 
-    if (getaddrinfo(NULL, port_char, &hints, &socket_info) != 0) {
-        std::cerr << "Error: getaddrinfo" << std::endl;
-        freeaddrinfo(socket_info);
+    int status = getaddrinfo(NULL, port_str.c_str(), &hints, &socket_info);
+    if (status != 0) {
+        std::cerr << "getaddrinfo error: " << gai_strerror(status) << std::endl;
+        //return 1;
         exit(1);
     }
+
+    struct addrinfo *p;
+    for (p = socket_info; p != NULL; p = p->ai_next) {
+        this->socketfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+        if (this->socketfd == -1) {
+            continue;
+        }
+
+        int yes = 1;
+        if (setsockopt(this->socketfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) == -1) {
+            std::cerr << "setsockopt error: " << strerror(errno) << std::endl;
+            //return 1;
+            exit(1);
+        }
+
+        if (bind(this->socketfd, p->ai_addr, p->ai_addrlen) == -1) {
+            close(this->socketfd);
+            continue;
+        }
+
+        break;
+    }
+    freeaddrinfo(socket_info);
+
+    if (p == NULL) {
+        std::cerr << RED << "Could not bind to port [" << get_port() << "] address already in use" << std::endl;
+        std::cerr << "Use another port or wait for the port to close correctly." << std::endl;
+        std::cerr << "To check port state:  netstat -an | grep " << get_port() << RESET << std::endl;
+        freeaddrinfo(socket_info);
+        //return 1;
+        exit(1);
+    }
+
+    if (listen(this->socketfd, MAX_CLIENTS) == -1) {
+        std::cerr << "listen error: " << strerror(errno) << std::endl;
+        //return 1;
+        exit(1);
+    }
+
+    std::cout << "Server listening on port " << GREEN << port << RESET << std::endl;
 }
 
+
 Server::~Server() {
-        // close client sockets
+    std::cout << BOLDRED << "Server destructor" << RESET << std::endl;
     std::map<int, User *>::iterator it = users.begin();
     while (it != users.end()) {
         close(it->first); 
         it++;
     }
-        
     close(socketfd);
-	freeaddrinfo(socket_info);
     std::map<int, User *>::iterator	user;
     for (user = users.begin(); user != users.end(); user++)
     	delete user->second;
     std::map<std::string, Canal *>::iterator	canal;
     for (canal = canals.begin(); canal != canals.end(); canal++)
-	{
-    	delete canal->second;
-	}
-}
-
-int Server::init() {
-    try {
-        while (socket_info != NULL) { 
-            this->socketfd = socket(socket_info->ai_family,
-                              socket_info->ai_socktype,
-                              socket_info->ai_protocol);
-
-            if (this->socketfd == -1) {
-                socket_info = socket_info->ai_next; // Try next address
-                continue;
-            }
-
-            if (bind(this->socketfd, socket_info->ai_addr, socket_info->ai_addrlen) == 0) {
-                std::cout << "Server listening on port " \
-                    << GREEN << port << RESET << std::endl;
-                break;
-            }
-
-            close(this->socketfd); // Close socket if bind fails
-            socket_info = socket_info->ai_next; // Try next address
-        }
-
-        if (socket_info == NULL) {
-            std::cerr << RED << "Could not bind to port [" << get_port();
-            std::cerr << "] address already in use" << std::endl;
-            std::cerr << "Use another port or wait for the port to close correctly." << std::endl;
-            std::cerr << "To check port state:  netstat -an | grep " << get_port() << RESET << std::endl;
-            throw std::exception();
-        }
-
-        if (listen(this->socketfd, MAX_CLIENTS) < 0) {
-            std::cerr << "Failed to listen" << std::endl;
-            throw std::exception();
-        }
-    } catch (std::exception &e) {
-        std::cerr << "Failed to initialize server" << std::endl;
-		return 1;
-    }
-	return 0;
+        delete canal->second;
 }
 
 int Server::run() {
     struct pollfd fds[MAX_CLIENTS];
+    memset(fds, 0, sizeof(fds));
     int nfds = 1;
     int timeout = 1000;
 

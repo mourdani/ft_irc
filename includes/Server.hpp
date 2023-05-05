@@ -77,7 +77,6 @@ public:
 	int	kick(User *user, std::vector<std::string> args);
 	int	pass(User *user, std::vector<std::string> args);
 
-	//get name
 	std::string get_name() const;
 
 private:

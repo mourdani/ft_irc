@@ -26,9 +26,9 @@ int	launch_server(int port, char *pw)
     Server server(port, pw);
     server_ptr = &server;
     signal(SIGINT, handle_sigint);
-    if (server.init())
-		return 1;
-	return server.run();
+    if (server.run())
+	return (1);
+    return (0);
 }
 
 int main(int ac, char **av) {
@@ -45,5 +45,7 @@ int main(int ac, char **av) {
 	if (port <= 0 || port > 65535)
 		return exit_error("Error : port outside [0, 65535]");
 
-	return launch_server(port, av[2]);
+    if (launch_server(port, av[2]))
+		return (1);
+    return 0;
 }
