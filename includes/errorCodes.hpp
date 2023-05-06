@@ -2,10 +2,20 @@
 # define ERROR_CODES_HPP
 
 #define RPL_TOPIC "332"
+
+
+#define RPL_WHOISUSER "311"
+#define RPL_WHOISSERVER "312"
+#define RPL_WHOISCHANNELS "319"
+#define RPL_WHOISOPERATOR "313"
+#define RPL_ENDOFWHOIS "318"
+
 #define RPL_NAMREPLY "353"
 #define RPL_ENDOFNAMES "366"
+
 #define RPL_LIST "322"
 #define RPL_LISTEND "323"
+
 #define RPL_YOUREOPER "381"
 #define RPL_WELCOME "001"
 #define ERR_USERONCHANNEL "443"

@@ -29,31 +29,42 @@ int	Server::join(User *user, std::vector<std::string> args)
 		else
 		{
 			canal->addUser(user);
-			std::map<int, User *>	users = canal->getUsers();
+	//		std::map<int, User *>	users = canal->getUsers();
 
-			//warning all users about joining
-			std::string	message(user->getNickname());
-			message.append("!").append(user->getHostname()).append(" JOIN ").append(*name).append("\n");
+	//		std::string	message = *name;
+//			//warning all users about joining
+			user->send_msg(":" + user->getNickname() + " JOIN " + canal->getName() + "\r\n");
+			user->send_msg(":" + user->getServerName() + " 332 " + user->getNickname() + " " + canal->getName() + " :" + canal->getTopic() + "\r\n");
+
+			std::map<int, User *> users = canal->getUsers();
 			for (std::map<int, User *>::iterator it2 = users.begin(); it2 != users.end(); it2++)
-				it2->second->send_msg(message);
+				it2->second->send_code(RPL_NAMREPLY, "= " + *name + " :@" + user->getNickname());
 
-			message = *name;
-			message.append(" :").append(canal->getTopic()); //append canal description
-			user->send_code(RPL_TOPIC, message);
-			std::string	user_list;
-			message = "= ";
-			message.append(*name).append(" :@");
-			std::map<int, User *>::iterator canal_user = users.begin();
-			while (canal_user != users.end())
-			{
-				message.append(canal_user->second->getNickname());
-				if (++canal_user != users.end())
-					message.append(" ");
-			}
-			user->send_code(RPL_NAMREPLY, message);
-			message = *name;
-			message.append(" :End of NAMES list");
-			user->send_code(RPL_ENDOFNAMES, message);
+			user->send_code(RPL_ENDOFNAMES, *name + " :End of NAMES list");
+			
+			
+			
+
+			//for (std::map<int, User *>::iterator it2 = users.begin(); it2 != users.end(); it2++)
+			//	it2->second->send_code(RPL_NAMREPLY, message);
+
+			//message = *name;
+			//message.append(" :").append(canal->getTopic()); //append canal description
+			//user->send_code(RPL_TOPIC, message);
+			//std::string	user_list;
+			//message = "= ";
+			//message.append(*name).append(" :@");
+			//std::map<int, User *>::iterator canal_user = users.begin();
+			//while (canal_user != users.end())
+			//{
+			//	message.append(canal_user->second->getNickname());
+			//	if (++canal_user != users.end())
+			//		message.append(" ");
+			//}
+			//user->send_code(RPL_NAMREPLY, message);
+			//message = *name;
+			//message.append(" :End of NAMES list");
+			//user->send_code(RPL_ENDOFNAMES, message);
 		}
 	}
 	return 0;

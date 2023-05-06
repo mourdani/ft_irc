@@ -2,6 +2,7 @@
 // Created by d420d4 on 11/04/23.
 //
 #include "User.hpp"
+#include "Server.hpp"
 #include <iostream>
 #include "errorCodes.hpp"
 
@@ -137,7 +138,7 @@ std::string	User::prefix()
 }
 
 void User::send_msg(std::string msg) {
-	std::cout << "sending: \"" << msg << "\" to user " << _nickname << std::endl;
+    std::cout << BOLDYELLOW << "Sending to " << _nickname << ": " << msg << RESET << std::endl;
     write(fd, msg.c_str(), msg.length());
 
 }

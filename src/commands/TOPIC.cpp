@@ -26,14 +26,14 @@ int	Server::topic(User *user, std::vector<std::string> args)
 		topic = topic + " " + args[i];
 	}
 	canal->setTopic(topic);
-	std::string message;
-	message = ":" + get_name() + " ";
-	message = message + RPL_TOPIC + " " + user->getNickname();
-	message = message + " " + args[1] + topic;
+	//std::string message;
+	//message = ":" + get_name() + " ";
+	//message = message + RPL_TOPIC + " " + user->getNickname();
+	//message = message + " " + args[1] + topic;
 	std::map<int, User *>	users = canal->getUsers();
 	for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); it ++)
 	{
-		it->second->send_msg(message);
+		it->second->send_msg(":" + user->getNickname() + " TOPIC " + canal->getName() + " " + canal->getTopic() + "\r\n");
 	}
 	return 0;
 }

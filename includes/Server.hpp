@@ -76,6 +76,7 @@ public:
 	int	topic(User *user, std::vector<std::string> args);
 	int	kick(User *user, std::vector<std::string> args);
 	int	pass(User *user, std::vector<std::string> args);
+	int	whois(User *user, std::vector<std::string> args);
 
 	std::string get_name() const;
 

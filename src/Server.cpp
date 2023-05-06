@@ -14,7 +14,7 @@ Server::Server(int port, std::string password) : port(port), _password(password)
 
     int status = getaddrinfo(NULL, port_str.c_str(), &hints, &socket_info);
     if (status != 0) {
-        std::cerr << "getaddrinfo error: " << gai_strerror(status) << std::endl;
+        std::cerr << "getaddrinfo error!" << std::endl;
         //return 1;
         exit(1);
     }
@@ -28,7 +28,7 @@ Server::Server(int port, std::string password) : port(port), _password(password)
 
         int yes = 1;
         if (setsockopt(this->socketfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) == -1) {
-            std::cerr << "setsockopt error: " << strerror(errno) << std::endl;
+            std::cerr << "setsockopt error!" << std::endl;
             //return 1;
             exit(1);
         }
@@ -52,7 +52,7 @@ Server::Server(int port, std::string password) : port(port), _password(password)
     }
 
     if (listen(this->socketfd, MAX_CLIENTS) == -1) {
-        std::cerr << "listen error: " << strerror(errno) << std::endl;
+        std::cerr << "listen error!" << std::endl;
         //return 1;
         exit(1);
     }
@@ -62,7 +62,6 @@ Server::Server(int port, std::string password) : port(port), _password(password)
 
 
 Server::~Server() {
-    std::cout << BOLDRED << "Server destructor" << RESET << std::endl;
     std::map<int, User *>::iterator it = users.begin();
     while (it != users.end()) {
         close(it->first); 
@@ -84,8 +83,8 @@ int Server::run() {
     int timeout = 1000;
 
 
-	Canal *general = new Canal("#general");
-	add_canal(general);
+    Canal *general = new Canal("#general");
+    add_canal(general);
     fds[0].fd = this->socketfd;
     fds[0].events = POLLIN;
     while (1) {
@@ -128,7 +127,7 @@ int Server::run() {
 	        
                 User	*user = this->get_user(fds[i].fd);
 			
-		std::cout << "Client " << i << " sent: " << buf;
+		std::cout << BOLDMAGENTA << "Received from " << user->getNickname() << ": " << buf << RESET << std::endl;
 		if (user == NULL)
 			std::cout << "Something is very wrong\n";
                	else

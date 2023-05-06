@@ -4,19 +4,20 @@
 #include "Canal.hpp"
 
 Canal::Canal() {
-    _topic = "";
+	_topic = "No Topic is set";
 	_chanop = NULL;
-    _name = "No name is set";
+	_name = "No name is set";
 }
 
 Canal::Canal(std::string name) {
-    _topic = "";
+	_topic = "No Topic is set";
 	_chanop = NULL;
-    _name = name;
+	_name = name;
 }
 
 Canal::Canal(const Canal &canal)
 {
+	_topic = "No Topic is set";
 	_chanop = NULL;
 	*this = canal;
 }
@@ -27,9 +28,10 @@ Canal::~Canal()
 
 Canal &Canal::operator=(const Canal &canal)
 {
+	_topic = canal._topic;
 	_name = canal._name;
 	_users = canal._users;
-
+	_chanop = canal._chanop;
 	return *this;
 }
 

@@ -2,7 +2,6 @@
 
 int	Server::nick(User *user, std::vector<std::string> args)
 {
-	//this shouldn't happen
 	if (args.size() < 2)
 		return 1;
 	if (get_user(args[1]) != NULL)
@@ -15,7 +14,7 @@ int	Server::nick(User *user, std::vector<std::string> args)
 	pair.first = args[1];
 	pair.second = user->getFd();
 	_user_ids.insert(std::pair<std::string, int>(args[1], user->getFd()));
-	user->send_msg(user->prefix() + " NICK " + args[1] + "\r\n");
 	user->setNickname(args[1]);
+	user->send_code(RPL_WELCOME, "Nickname successfully changed to " + args[1] + ".");
 	return 0;
 }

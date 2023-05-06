@@ -61,6 +61,7 @@ int Server::handle_command(User *user, char *buf)
 		"TOPIC", //set topic of a channel
 		"KICK", //kick a user from a channel
 		"PASS", //set password
+		"whois", //get info about a user
 		""
 	} ;
 	command	commands[] = {
@@ -77,6 +78,7 @@ int Server::handle_command(User *user, char *buf)
 		&Server::topic,
 		&Server::kick,
 		&Server::pass,
+		&Server::whois,
 	} ;
 	sep_commands = split(buf, '\n');
 

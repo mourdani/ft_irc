@@ -11,6 +11,7 @@ SRC			= main.cpp \
 			commands/JOIN.cpp \
 			commands/NICK.cpp \
 			commands/USER.cpp \
+			commands/WHOIS.cpp \
 			commands/PART.cpp \
 			commands/LIST.cpp \
 			commands/PRIVMSG.cpp \
