@@ -31,7 +31,6 @@ User::User() {
 }
 
 User::~User() {
-
 }
 
 User &User::operator=(const User &user) {

@@ -15,6 +15,4 @@ int Server::whois(User *user, std::vector<std::string> args) {
 	user->send_msg(":" + user->getNickname() + " 312 " + user->getNickname() + " " + target->getNickname() + " " + target->getServerName() + "\r\n");
 	user->send_msg(":" + user->getNickname() + " 318 " + user->getNickname() + " " + target->getNickname() + " :End of WHOIS list\r\n");
 	return 0;
-	
-	return 0;
 }

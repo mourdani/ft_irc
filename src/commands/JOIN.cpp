@@ -29,42 +29,28 @@ int	Server::join(User *user, std::vector<std::string> args)
 		else
 		{
 			canal->addUser(user);
-	//		std::map<int, User *>	users = canal->getUsers();
-
-	//		std::string	message = *name;
-//			//warning all users about joining
 			user->send_msg(":" + user->getNickname() + " JOIN " + canal->getName() + "\r\n");
 			user->send_msg(":" + user->getServerName() + " 332 " + user->getNickname() + " " + canal->getName() + " :" + canal->getTopic() + "\r\n");
-
-			std::map<int, User *> users = canal->getUsers();
-			for (std::map<int, User *>::iterator it2 = users.begin(); it2 != users.end(); it2++)
-				it2->second->send_code(RPL_NAMREPLY, "= " + *name + " :@" + user->getNickname());
-
-			user->send_code(RPL_ENDOFNAMES, *name + " :End of NAMES list");
-			
-			
-			
-
-			//for (std::map<int, User *>::iterator it2 = users.begin(); it2 != users.end(); it2++)
-			//	it2->second->send_code(RPL_NAMREPLY, message);
-
-			//message = *name;
-			//message.append(" :").append(canal->getTopic()); //append canal description
-			//user->send_code(RPL_TOPIC, message);
-			//std::string	user_list;
-			//message = "= ";
-			//message.append(*name).append(" :@");
-			//std::map<int, User *>::iterator canal_user = users.begin();
-			//while (canal_user != users.end())
+			std::map<int, User *>	users = canal->getUsers();
+			for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); it ++)
+			{
+				user->send_code(RPL_NAMREPLY, "= " + *name + " :" + it->second->getNickname());
+			}
+			user->send_msg(":" + user->getServerName() + " 366 " + user->getNickname() + " " + canal->getName() + " :End of /NAMES list.\r\n");
+			for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); it ++)
+			{
+				if (it->second != user)
+					it->second->send_msg(":" + user->getNickname() + " JOIN " + canal->getName() + "\r\n");
+			}
+			//for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); it ++)
 			//{
-			//	message.append(canal_user->second->getNickname());
-			//	if (++canal_user != users.end())
-			//		message.append(" ");
+			//	if (it->second != user)
+			//		it->second->send_msg(":" + user->getNickname() + " JOIN " + canal->getName() + "\r\n");
 			//}
-			//user->send_code(RPL_NAMREPLY, message);
-			//message = *name;
-			//message.append(" :End of NAMES list");
-			//user->send_code(RPL_ENDOFNAMES, message);
+
+
+
+
 		}
 	}
 	return 0;

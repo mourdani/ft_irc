@@ -115,6 +115,7 @@ int Server::run() {
         
         for (int i = 1; i < nfds; i++) {
             if (fds[i].revents & POLLIN) {
+                User	*user = this->get_user(fds[i].fd);
                 char buf[1024];
                 memset(buf, 0, 1024);
                 int len = recv(fds[i].fd, buf, 1024, MSG_DONTWAIT);
@@ -124,8 +125,6 @@ int Server::run() {
                     fds[i].fd = -1;
                     continue;
                 }
-	        
-                User	*user = this->get_user(fds[i].fd);
 			
 		std::cout << BOLDMAGENTA << "Received from " << user->getNickname() << ": " << buf << RESET << std::endl;
 		if (user == NULL)
