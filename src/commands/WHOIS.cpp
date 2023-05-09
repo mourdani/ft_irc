@@ -8,7 +8,7 @@ int Server::whois(User *user, std::vector<std::string> args) {
 
 	if (user_exists(args[1]) == false) {
 		user->send_msg(":" + user->getNickname() + " 401 " + user->getNickname() + " " + args[1] + " :No such nick\r\n");
-	        return 0;
+		return 0;
 	}
 	User *target = get_user(args[1]);
 	user->send_msg(":" + user->getNickname() + " 311 " + user->getNickname() + " " + target->getNickname() + " " + target->getUsername() + " " + target->getHostname() + " * :" + target->getRealname() + "\r\n");

@@ -30,6 +30,7 @@ void handle_sigint(int sig);
 
 #define QUIT 2
 #define KILL 3
+#define BAD_USER 4
 
 class Server {
 public:

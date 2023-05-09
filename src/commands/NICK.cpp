@@ -8,8 +8,9 @@ int	Server::nick(User *user, std::vector<std::string> args)
 		return 0;
 	if (get_user(args[1]) != NULL)
 	{
-		user->send_code(ERR_USERONCHANNEL, args[1].append(" :Nickname is already in use.\n"));
-		return 1;
+		user->send_code(ERR_USERONCHANNEL, * + " " + args[1] + " :Nickname is already in use.");
+		quit(user, args);
+		return BAD_USER;
 	}
 	_user_ids.erase(user->getNickname());
 	std::pair<std::string, int>	pair;

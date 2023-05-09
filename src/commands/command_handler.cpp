@@ -61,7 +61,7 @@ int Server::handle_command(User *user, char *buf)
 		"TOPIC", //set topic of a channel
 		"KICK", //kick a user from a channel
 		"PASS", //set password
-		"whois", //get info about a user
+		"WHOIS", //get info about a user
 		"NOTICE", //like privmsg without replying to sender
 		""
 	} ;
