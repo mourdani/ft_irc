@@ -62,6 +62,7 @@ int Server::handle_command(User *user, char *buf)
 		"KICK", //kick a user from a channel
 		"PASS", //set password
 		"whois", //get info about a user
+		"NOTICE", //like privmsg without replying to sender
 		""
 	} ;
 	command	commands[] = {
@@ -79,6 +80,7 @@ int Server::handle_command(User *user, char *buf)
 		&Server::kick,
 		&Server::pass,
 		&Server::whois,
+		&Server::notice,
 	} ;
 	sep_commands = split(buf, '\n');
 

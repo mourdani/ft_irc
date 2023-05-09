@@ -22,6 +22,7 @@ SRC			= main.cpp \
 			commands/TOPIC.cpp \
 			commands/KICK.cpp \
 			commands/OPER.cpp \
+			commands/NOTICE.cpp \
 			commands/PASS.cpp 
 DEP			= $(OBJS:.o=.d)
 
