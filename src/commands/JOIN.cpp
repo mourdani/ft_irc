@@ -30,7 +30,7 @@ int	Server::join(User *user, std::vector<std::string> args)
 		{
 			canal->addUser(user);
 			user->send_msg(":" + user->getNickname() + " JOIN " + canal->getName() + "\r\n");
-			user->send_msg(":" + user->getServerName() + " 332 " + user->getNickname() + " " + canal->getName() + " :" + canal->getTopic() + "\r\n");
+			user->send_msg(":" + user->getServerName() + " 332 " + user->getNickname() + " " + canal->getName() + " " + canal->getTopic() + "\r\n");
 			std::map<int, User *>	users = canal->getUsers();
 			for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); it ++)
 			{

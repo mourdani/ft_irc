@@ -16,14 +16,16 @@ int	Server::topic(User *user, std::vector<std::string> args)
 	{
 		if (canal->getTopic().size() == 0)
 			return (user->send_code(RPL_NOTOPIC, args[1] + " :No topic is set"), 0);
-		return (user->send_code(RPL_TOPIC, args[1] + " :" + canal->getTopic()), 0);
+		return (user->send_code(RPL_TOPIC, args[1] + " " + canal->getTopic()), 0);
 	}
 	if (!canal->getChanop() || *(canal->getChanop()) != *user)
 		return (user->send_code(ERR_CHANOPRIVSNEEDED, args[1] + " :You're not channel operator"), 0);
 	std::string	topic = "";
 	for (unsigned int i = 2; i < args.size(); i++)
 	{
-		topic = topic + " " + args[i];
+		if (i != 2)
+			topic = topic + " ";
+		topic = topic + args[i];
 	}
 	canal->setTopic(topic);
 	//std::string message;
