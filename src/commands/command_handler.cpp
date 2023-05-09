@@ -91,7 +91,7 @@ int Server::handle_command(User *user, char *buf)
 		{
 			if (args[0].compare(command_names[j]) == 0)
 			{
-				if (user->isRegistered() == true) 
+				if (user->isRegistered() || args[0].compare("NICK") == 0 || args[0].compare("USER") == 0)
 				{
 					int command_ret;
 					command_ret = (this->*commands[j])(user, args);

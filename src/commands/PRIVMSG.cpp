@@ -33,7 +33,9 @@ int	Server::privmsg(User *user, std::vector<std::string> args)
 	}
 	std::vector<std::string>	destinations = split(args[1], ',');
 	std::string	message;
+	std::string	sender;
 
+	sender = ":" + user->getNickname() + "!" + user->getUsername() + "@" + user->getHostname() + " PRIVMSG" + " ";
 	message = "";
 	for (unsigned int i = 2; i < args.size(); i ++)
 	{
@@ -45,12 +47,12 @@ int	Server::privmsg(User *user, std::vector<std::string> args)
 	{
 		if ((*dest)[0] == '#')
 		{
-			if (message_canal(this, user, *dest, args[0] + " " + user->getNickname() + " " + *dest + message) == 0)
+			if (message_canal(this, user, *dest, sender + *dest + message) == 0)
 				continue;
 		}
 		User	*dest_user = get_user(*dest);
 		if (dest_user)
-			dest_user->send_msg(args[0] + " " + user->getNickname() + message);
+			dest_user->send_msg(sender + *dest + message);
 		else
 			user->send_code(ERR_NOSUCHNICK, *dest + " :No such nick/channel");
 	}

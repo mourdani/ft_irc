@@ -13,10 +13,6 @@ int Server::user(User *user, std::vector<std::string> args)
 		}
 	}
 	user->setUsername(args[1]);
-	std::vector<std::string>	args2;
-	args2.push_back("JOIN");
-	args2.push_back("#general");
-	join(user, args2);
 	return 0;
 }
 

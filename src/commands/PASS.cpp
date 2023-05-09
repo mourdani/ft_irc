@@ -13,6 +13,10 @@ int	Server::pass(User *user, std::vector<std::string> args)
 	{
 		user->send_code(RPL_WELCOME, " :Welcome to the Internet Relay Network.");
 		user->setRegistered(true);
+		std::vector<std::string>	args2;
+		args2.push_back("JOIN");
+		args2.push_back("#general");
+		join(user, args2);
 		return 0;
 	}
 	else

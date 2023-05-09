@@ -4,6 +4,8 @@ int	Server::nick(User *user, std::vector<std::string> args)
 {
 	if (args.size() < 2)
 		return 1;
+	if (!user->isRegistered() && user->getNickname().size() != 0)
+		return 0;
 	if (get_user(args[1]) != NULL)
 	{
 		user->send_code(ERR_USERONCHANNEL, args[1].append(" :Nickname is already in use.\n"));
