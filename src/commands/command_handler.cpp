@@ -1,6 +1,7 @@
 #include "Server.hpp"
 #include "colors.hpp"
 #include <vector>
+#include <algorithm>
 
 std::vector<std::string>	split(std::string str, char delimiter)
 {
@@ -47,6 +48,7 @@ int Server::handle_command(User *user, char *buf)
 
 	std::vector<std::string>	sep_commands;
 	std::vector<std::string>	args;
+
 	std::string	command_names[] = {
 		"JOIN", //join a channel
 		"NICK", //change nickname
@@ -87,6 +89,7 @@ int Server::handle_command(User *user, char *buf)
 	for (std::vector<std::string>::iterator i = sep_commands.begin(); i != sep_commands.end(); i++)
 	{
 		args = split(*i, ' '); 
+		transform(args[0].begin(), args[0].end(), args[0].begin(), ::toupper);
 		if (args.size() == 0)
 			continue ;
 		for (int j = 0; command_names[j].size(); j++) 
@@ -109,7 +112,7 @@ int Server::handle_command(User *user, char *buf)
 				}
 				else
 				{
-					user->send_code(ERR_NOTREGISTERED, " :You are not registered\r\n");
+					user->send_code(ERR_NOTREGISTERED, ":You are not registered");
 					return 1;
 				}
 			}

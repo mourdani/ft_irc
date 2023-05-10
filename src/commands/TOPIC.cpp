@@ -4,7 +4,7 @@ int	Server::topic(User *user, std::vector<std::string> args)
 {
 	if (args.size() < 2)
 	{
-		user->send_code(ERR_NEEDMOREPARAMS, "Usage: /topic <channel> [<topic>]");
+		user->send_code(ERR_NEEDMOREPARAMS, ":Usage: /topic <channel> [<topic>]");
 		return 0;
 	}
 	Canal	*canal = get_canal(args[1]);
@@ -35,7 +35,7 @@ int	Server::topic(User *user, std::vector<std::string> args)
 	std::map<int, User *>	users = canal->getUsers();
 	for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); it ++)
 	{
-		it->second->send_msg(":" + user->getNickname() + " TOPIC " + canal->getName() + " " + canal->getTopic() + "\r\n");
+		it->second->send_msg(":" + user->getNickname() + " TOPIC " + canal->getName() + " " + canal->getTopic());
 	}
 	return 0;
 }

@@ -126,18 +126,18 @@ int Server::run() {
                     continue;
                 }
 			
-		std::cout << BOLDMAGENTA << "Received from " << user->getNickname() << ": " << buf << RESET << std::endl;
-		if (user == NULL)
-			std::cout << "Something is very wrong\n";
-               	else
-		{
-			int	ret = handle_command(user, buf);
-			if (ret == QUIT || ret == BAD_USER)
-				fds[i].fd = -1;
-			if (ret == KILL)
-				return KILL;
-		}
-		memset(buf, 0, 1024);
+				std::cout << BOLDMAGENTA << "Received from " << user->getNickname() << ": " << buf << RESET << std::endl;
+				if (user == NULL)
+					std::cout << "Something is very wrongRPL_CHANNELMODEIS";
+				else
+				{
+					int	ret = handle_command(user, buf);
+					if (ret == QUIT || ret == BAD_USER)
+						fds[i].fd = -1;
+					if (ret == KILL)
+						return KILL;
+				}
+				memset(buf, 0, 1024);
             }
         }
 

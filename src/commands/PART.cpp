@@ -2,24 +2,45 @@
 
 int	Server::part(User *user, std::vector<std::string> args)
 {
-	std::map<std::string, Canal *> canals;
-	std::map<std::string, Canal *>::iterator i;
+	std::vector<std::string> canals;
 	Canal	*canal;
-	//this shouldn't happen
+	std::string	message = "";
+
+
 	if (args.size() < 2)
+	{
+		user->send_code(ERR_NEEDMOREPARAMS, ":Usage: /part <channel>");
 		return 1;
-	canal = get_canal(args[1]);
-	if (!canal)
-	{
-		user->send_msg("This channel doesn't exist.\n");
-		return 0;
 	}
-	if (canal->checkUser(user->getFd()) == 0)
+	if (args.size() >= 3)
 	{
-		user->send_msg("You are not on this channel.\n");
-		return 0;
+		message = " ";
+		for (unsigned int i = 2; i < args.size(); i++)
+		{
+			message = message + args[i];
+		}
 	}
-	canal->removeUser(*user);
-	user->send_msg("Channel left.\n");
+	canals = split(args[1], ',');
+	for (std::vector<std::string>::iterator it = canals.begin(); it != canals.end(); it++)
+	{
+		canal = get_canal(*it);
+		if (!canal)
+		{
+			user->send_code(ERR_NOSUCHCHANNEL, ":This channel doesn't exist.");
+			continue;
+		}
+		if (canal->checkUser(user->getFd()) == 0)
+		{
+			user->send_code(ERR_NOTONCHANNEL, ":You are not on this channel.");
+			continue;
+		}
+		std::map<int, User *>	users = canal->getUsers();
+		for (std::map<int, User *>::iterator member = users.begin(); member != users.end(); member++)
+		{
+			member->second->send_msg(user->prefix() + " PART " + *it + message);
+		}
+		canal->removeUser(*user);
+	}
+
 	return 0;
 }

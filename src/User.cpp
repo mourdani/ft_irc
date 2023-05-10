@@ -137,8 +137,8 @@ std::string	User::prefix()
 }
 
 void User::send_msg(std::string msg) {
-    std::cout << BOLDYELLOW << "Sending to " << _nickname << ": " << msg << RESET << std::endl;
-    write(fd, msg.c_str(), msg.length());
+    std::cout << BOLDYELLOW << "Sending to " << _nickname << ": " << msg << RESET << "\n" << std::endl;
+    write(fd, (msg + "\r\n").c_str(), msg.length() + 2);
 
 }
 
@@ -156,10 +156,7 @@ void	User::send_code(std::string code, std::string msg)
 	}
 	reply.append(getNickname());
 	reply.append(" ");
-	if (code.compare(RPL_LIST))
-		reply.append(":");
 	reply.append(msg);
-	reply.append("\r\n");
 	send_msg(reply);
 }
 
@@ -167,8 +164,8 @@ int	User::send_unregistered_code(void)
 {
     if (this->isRegistered() == false)
     {	
-    	this->send_code(ERR_NOTREGISTERED, "You have not registered\r\n");
-	return 1;
-    }	
+    	this->send_code(ERR_NOTREGISTERED, ":You have not registered");
+		return 1;
+    }
     return 0;
 }

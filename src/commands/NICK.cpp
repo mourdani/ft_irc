@@ -18,6 +18,6 @@ int	Server::nick(User *user, std::vector<std::string> args)
 	pair.second = user->getFd();
 	_user_ids.insert(std::pair<std::string, int>(args[1], user->getFd()));
 	user->setNickname(args[1]);
-	user->send_code(RPL_WELCOME, "Nickname successfully changed to " + args[1] + ".");
+	user->send_code(RPL_WELCOME, ":Nickname successfully changed to " + args[1] + ".");
 	return 0;
 }

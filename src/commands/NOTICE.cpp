@@ -37,7 +37,6 @@ int	Server::notice(User *user, std::vector<std::string> args)
 		message.append(" ");
 		message.append(args[i]);
 	}
-	message.append("\n");
 	for (std::vector<std::string>::iterator dest = destinations.begin(); dest != destinations.end(); dest++)
 	{
 		if ((*dest)[0] == '#')

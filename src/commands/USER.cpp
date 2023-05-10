@@ -8,7 +8,7 @@ int Server::user(User *user, std::vector<std::string> args)
 	{
 		if (it->second->getUsername().compare(args[1]) == 0)
 		{
-			user->send_code(ERR_ALREADYREGISTRED, args[1] + " " + "Unauthorized command (already registered)");
+			user->send_code(ERR_ALREADYREGISTRED, args[1] + " :Unauthorized command (already registered)");
 			quit(user, args);
 			return BAD_USER;
 		}

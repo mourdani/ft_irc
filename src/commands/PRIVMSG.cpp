@@ -9,7 +9,7 @@ int	message_canal(Server *server, User *user, std::string dest, std::string mess
 		if (!canal->checkUser(user->getFd()))
 		{
 			user->send_code(ERR_CANNOTSENDTOCHAN, dest + " :Cannot send to channel");
-			user->send_msg("You are not a member of this channel. Use /join.\n");
+			// user->send_msg("You are not a member of this channel. Use /join.");
 			return 0;
 		}
 		std::map<int, User *>	users = canal->getUsers();
@@ -28,7 +28,7 @@ int	Server::privmsg(User *user, std::vector<std::string> args)
 {
 	if (args.size() < 3)
 	{
-		user->send_msg("Not enough arguments.");
+		user->send_code(ERR_NEEDMOREPARAMS, ":Usage: /msg <dest> <msg>");
 		return 0;
 	}
 	std::vector<std::string>	destinations = split(args[1], ',');
@@ -42,7 +42,6 @@ int	Server::privmsg(User *user, std::vector<std::string> args)
 		message.append(" ");
 		message.append(args[i]);
 	}
-	message.append("\n");
 	for (std::vector<std::string>::iterator dest = destinations.begin(); dest != destinations.end(); dest++)
 	{
 		if ((*dest)[0] == '#')
