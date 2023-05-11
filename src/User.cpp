@@ -14,6 +14,7 @@ User::User(std::string hostname) {
 	_operator = 0;
     _pass = "";
     _registered = false;
+	_command = "";
 }
 
 User::User(std::string nickname, std::string realname, std::string hostname) {
@@ -24,10 +25,11 @@ User::User(std::string nickname, std::string realname, std::string hostname) {
 	_operator = 0;
     _pass = "";
     _registered = false;
+	_command = "";
 }
 
 User::User() {
-
+	_command = "";
 }
 
 User::~User() {
@@ -129,6 +131,16 @@ std::string	User::getServerName() const
 void	User::setServerName(std::string name)
 {
 	_server_name = name;
+}
+
+void	User::setCommand(std::string command)
+{
+	_command = command;
+}
+
+std::string	&User::getCommand()
+{
+	return _command;
 }
 
 std::string	User::prefix()

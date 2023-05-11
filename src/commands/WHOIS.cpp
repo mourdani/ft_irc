@@ -2,7 +2,7 @@
 
 int Server::whois(User *user, std::vector<std::string> args) {
 	if (args.size() < 2) {
-		user->send_msg(":" + user->getNickname() + " 461 " + user->getNickname() + " WHOIS :Not enough parameters");
+		user->send_code(ERR_NEEDMOREPARAMS, ":Usage: /WHOIS <target>");
 		return 0;
 	}
 

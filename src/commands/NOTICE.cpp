@@ -25,7 +25,10 @@ int	notice_canal(Server *server, User *user, std::string dest, std::string messa
 int	Server::notice(User *user, std::vector<std::string> args)
 {
 	if (args.size() < 3)
+	{
+		user->send_code(ERR_NEEDMOREPARAMS, ":Usage: /NOTICE <dest> <msg>");
 		return 0;
+	}
 	std::vector<std::string>	destinations = split(args[1], ',');
 	std::string	message;
 	std::string	sender;

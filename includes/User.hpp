@@ -21,6 +21,7 @@ private:
     bool _registered;
     int fd;
 	std::list<std::string>	canals;
+	std::string	_command;
 
 public:
     User();
@@ -52,6 +53,9 @@ public:
     void	setServerName(std::string name);
     void setPass(const std::string &pass);
     void setRegistered(bool registered);
+	void	setCommand(std::string command);
+	std::string	&getCommand();
+
 
     std::string	prefix();
 

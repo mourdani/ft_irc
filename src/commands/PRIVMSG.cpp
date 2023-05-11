@@ -9,11 +9,11 @@ int	message_canal(Server *server, User *user, std::string dest, std::string mess
 		if (!canal->checkUser(user->getFd()))
 		{
 			user->send_code(ERR_CANNOTSENDTOCHAN, dest + " :Cannot send to channel");
-			// user->send_msg("You are not a member of this channel. Use /join.");
 			return 0;
 		}
 		std::map<int, User *>	users = canal->getUsers();
 		std::map<int, User *>::iterator	it;
+		canal->broadcast(user, "PRIVMSG " + dest + message, 1);
 		for (it = users.begin(); it != users.end(); it++)
 		{
 			if (it->second != user)
@@ -33,9 +33,7 @@ int	Server::privmsg(User *user, std::vector<std::string> args)
 	}
 	std::vector<std::string>	destinations = split(args[1], ',');
 	std::string	message;
-	std::string	sender;
 
-	sender = ":" + user->getNickname() + "!" + user->getUsername() + "@" + user->getHostname() + " PRIVMSG" + " ";
 	message = "";
 	for (unsigned int i = 2; i < args.size(); i ++)
 	{
@@ -46,12 +44,12 @@ int	Server::privmsg(User *user, std::vector<std::string> args)
 	{
 		if ((*dest)[0] == '#')
 		{
-			if (message_canal(this, user, *dest, sender + *dest + message) == 0)
+			if (message_canal(this, user, *dest, message) == 0)
 				continue;
 		}
 		User	*dest_user = get_user(*dest);
 		if (dest_user)
-			dest_user->send_msg(sender + *dest + message);
+			dest_user->send_msg(user->prefix() + " PRIVMSG " + *dest + message);
 		else
 			user->send_code(ERR_NOSUCHNICK, *dest + " :No such nick/channel");
 	}

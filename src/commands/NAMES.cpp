@@ -4,6 +4,11 @@ int	Server::names(User *user, std::vector<std::string> args){
 	std::string names;
 	std::map<int, User *>::iterator it = users.begin();
 
+	if (args.size() < 2)
+	{
+		user->send_code(ERR_NEEDMOREPARAMS, "/NAMES <channel>");
+		return 0;
+	}
 	if (args[1].find_first_not_of("0123456789") == std::string::npos) 
 	{
 		while (it != users.end())

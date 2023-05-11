@@ -81,6 +81,15 @@ void	Canal::removeUser(int id)
 	this->_users.erase(id);
 }
 
+void	Canal::broadcast(User *sender, std::string message, int skip_self)
+{
+	for (std::map<int, User *>::iterator it = _users.begin(); it != _users.end(); it ++)
+	{
+		if (skip_self && *(it->second) == *sender)
+			continue;
+		it->second->send_msg(sender->prefix() + " " + message);
+	}
+}
 
 void Canal::setTopic(const std::string &topic) {
 	_topic = topic;

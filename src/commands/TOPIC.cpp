@@ -32,10 +32,6 @@ int	Server::topic(User *user, std::vector<std::string> args)
 	//message = ":" + get_name() + " ";
 	//message = message + RPL_TOPIC + " " + user->getNickname();
 	//message = message + " " + args[1] + topic;
-	std::map<int, User *>	users = canal->getUsers();
-	for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); it ++)
-	{
-		it->second->send_msg(":" + user->getNickname() + " TOPIC " + canal->getName() + " " + canal->getTopic());
-	}
+	canal->broadcast(user, "TOPIC " + canal->getName() + " " + canal->getTopic());
 	return 0;
 }

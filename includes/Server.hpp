@@ -32,13 +32,16 @@ void handle_sigint(int sig);
 #define KILL 3
 #define BAD_USER 4
 
+class Server;
+
+typedef	int (Server::*command)(User *user, std::vector<std::string> args);
+
 class Server {
 public:
 	Server(int port, std::string password);
 	~Server();
 	Server(const Server& other);
 	Server& operator=(const Server& other);
-
 
 	int init();
 	int run();
@@ -60,7 +63,7 @@ public:
 	std::map<int, User *>	get_users() const;
 	
 
-	int	handle_command(User *user, char *buf);
+	int	handle_command(User *user, std::string buf);
 	std::string	command_reply(int code, std::string reply) const;
 
 	int	join(User *user, std::vector<std::string> args);
@@ -91,11 +94,10 @@ private:
 	std::map<std::string, int> _user_ids;
 	std::map<std::string, Canal *> canals;
 	struct addrinfo *socket_info;
-
+	static std::string	_command_names[];
+	static command	_commands[];
 
 	Server();
 };
-
-typedef	int (Server::*command)(User *user, std::vector<std::string> args);
 
 #endif

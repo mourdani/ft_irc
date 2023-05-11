@@ -43,6 +43,9 @@ public:
 
 	void	removeUser(int id);
 
+	void	broadcast(User *sender, std::string message, int skip_self = 0);
+
+
     void   setTopic(const std::string &topic);
     std::string getTopic() const;
 };

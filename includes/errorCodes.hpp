@@ -35,5 +35,6 @@
 #define ERR_USERNOTINCHANNEL "441"
 #define ERR_BADCHANMASK "476"
 #define RPL_CHANNELMODEIS "324"
+#define RPL_UMODEIS "221"
 
 #endif

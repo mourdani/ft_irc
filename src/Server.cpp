@@ -128,7 +128,7 @@ int Server::run() {
 			
 				std::cout << BOLDMAGENTA << "Received from " << user->getNickname() << ": " << buf << RESET << std::endl;
 				if (user == NULL)
-					std::cout << "Something is very wrongRPL_CHANNELMODEIS";
+					std::cout << "Something is very wrong";
 				else
 				{
 					int	ret = handle_command(user, buf);

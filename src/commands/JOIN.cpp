@@ -8,7 +8,10 @@ int	Server::join(User *user, std::vector<std::string> args)
 	std::string					mode = "+t";
 
 	if (args.size() < 2)
+	{
+		user->send_code(ERR_NEEDMOREPARAMS, ":Usage: /JOIN <channel> *( \",\" <channel> )");
 		return 1;
+	}
 	channels = split(args[1], ',');
 	for (std::vector<std::string>::iterator name = channels.begin(); name != channels.end(); name ++)
 	{
@@ -31,7 +34,7 @@ int	Server::join(User *user, std::vector<std::string> args)
 		else
 		{
 			canal->addUser(user);
-			user->send_msg(":" + user->getNickname() + " JOIN " + canal->getName());
+			canal->broadcast(user, "JOIN " + canal->getName());
 			user->send_msg(":" + user->getServerName() + " 332 " + user->getNickname() + " " + canal->getName() + " " + canal->getTopic());
 			std::map<int, User *>	users = canal->getUsers();
 			for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); it ++)
@@ -42,11 +45,6 @@ int	Server::join(User *user, std::vector<std::string> args)
 					user->send_code(RPL_NAMREPLY, "= " + *name + " :" + it->second->getNickname());
 			}
 			user->send_msg(":" + user->getServerName() + " 366 " + user->getNickname() + " " + canal->getName() + " :End of /NAMES list.");
-			for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); it ++)
-			{
-				if (it->second != user)
-					it->second->send_msg(":" + user->getNickname() + " JOIN " + canal->getName());
-			}
 			user->send_code(RPL_CHANNELMODEIS, *name + " " + mode + " " + "@m");
 		}
 	}

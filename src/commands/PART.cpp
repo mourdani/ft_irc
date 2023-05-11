@@ -34,11 +34,7 @@ int	Server::part(User *user, std::vector<std::string> args)
 			user->send_code(ERR_NOTONCHANNEL, ":You are not on this channel.");
 			continue;
 		}
-		std::map<int, User *>	users = canal->getUsers();
-		for (std::map<int, User *>::iterator member = users.begin(); member != users.end(); member++)
-		{
-			member->second->send_msg(user->prefix() + " PART " + *it + message);
-		}
+		canal->broadcast(user, "PART " + *it + message);
 		canal->removeUser(*user);
 	}
 
