@@ -83,8 +83,8 @@ int Server::run() {
     int timeout = 1000;
 
 
-    Canal *general = new Canal("#general");
-    add_canal(general);
+   // Canal *general = new Canal("#general");
+   // add_canal(general);
     fds[0].fd = this->socketfd;
     fds[0].events = POLLIN;
     while (1) {
