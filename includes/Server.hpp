@@ -62,6 +62,7 @@ public:
 
 	std::map<int, User *>	get_users() const;
 	
+	void	broadcast(User *sender, std::string message, int skip_self = 0);
 
 	int	handle_command(User *user, std::string buf);
 	std::string	command_reply(int code, std::string reply) const;

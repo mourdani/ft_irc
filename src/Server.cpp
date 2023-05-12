@@ -244,3 +244,13 @@ int Server::get_port() const {
 std::string Server::get_password() const {
     return this->_password;
 }
+
+void	Server::broadcast(User *sender, std::string message, int skip_self)
+{
+	for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); it ++)
+	{
+		if (skip_self && *(it->second) == *sender)
+			continue;
+		it->second->send_msg(sender->prefix() + " " + message);
+	}
+}

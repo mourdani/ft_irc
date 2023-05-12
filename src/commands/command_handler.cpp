@@ -109,7 +109,7 @@ int Server::handle_command(User *user, std::string buf)
 		{
 			if (args[0].compare(_command_names[j]) == 0) //if we find the right command
 			{
-				if (user->isRegistered() || args[0].compare("NICK") == 0 || args[0].compare("USER") == 0 || args[0].compare("PASS") == 0 || args[0].compare("QUIT")) //because hexchat sends USER and NICK on connection. also checks if password being sent
+				if (user->isRegistered() || args[0].compare("NICK") == 0 || args[0].compare("USER") == 0 || args[0].compare("PASS") == 0 || args[0].compare("QUIT") == 0) //because hexchat sends USER and NICK on connection. also checks if password being sent
 				{
 					int command_ret;
 					command_ret = (this->*_commands[j])(user, args);

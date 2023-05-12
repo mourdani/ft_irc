@@ -18,7 +18,7 @@ int	Server::kick(User *user, std::vector<std::string> args)
 
 	std::vector<std::string>	to_kick = split(args[2], ',');
 	std::string	message = "";
-	for (unsigned int i = 2; i < args.size(); i ++)
+	for (unsigned int i = 3; i < args.size(); i ++)
 	{
 		message.append(" ");
 		message.append(args[i]);

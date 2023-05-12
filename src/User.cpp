@@ -7,7 +7,7 @@
 #include "errorCodes.hpp"
 
 User::User(std::string hostname) {
-    _nickname = "";
+    _nickname = "*";
 	_realname = "";
 	_username = "";
     _hostname = hostname;
@@ -30,6 +30,7 @@ User::User(std::string nickname, std::string realname, std::string hostname) {
 
 User::User() {
 	_command = "";
+    _registered = false;
 }
 
 User::~User() {
