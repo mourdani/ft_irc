@@ -20,6 +20,7 @@ std::string	Server::_command_names[] = {
 	"PASS", //set password
 	"WHOIS", //get info about a user
 	"NOTICE", //like privmsg without replying to sender
+	"DIE",
 	""
 } ;
 
@@ -39,6 +40,7 @@ command	Server::_commands[] = {
 	&Server::pass,
 	&Server::whois,
 	&Server::notice,
+	&Server::die,
 } ;
 
 

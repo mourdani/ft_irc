@@ -134,8 +134,8 @@ int Server::run() {
 					int	ret = handle_command(user, buf);
 					if (ret == QUIT || ret == BAD_USER)
 						fds[i].fd = -1;
-					if (ret == KILL)
-						return KILL;
+					if (ret == DIE)
+						return DIE;
 				}
 				memset(buf, 0, 1024);
             }

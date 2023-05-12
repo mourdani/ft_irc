@@ -45,7 +45,8 @@ int	Server::join(User *user, std::vector<std::string> args)
 					user->send_code(RPL_NAMREPLY, "= " + *name + " :" + it->second->getNickname());
 			}
 			user->send_msg(":" + user->getServerName() + " 366 " + user->getNickname() + " " + canal->getName() + " :End of /NAMES list.");
-			user->send_code(RPL_CHANNELMODEIS, *name + " " + mode + " " + "@m");
+			// user->send_code(RPL_CHANNELMODEIS, *name + " " + mode + " " + "@m");
+			// user->send_msg(user->prefix() + " MODE " + *name + " " + mode);
 		}
 	}
 	return 0;

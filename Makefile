@@ -18,7 +18,7 @@ SRC			= main.cpp \
 			commands/QUIT.cpp \
 			commands/PING.cpp  \
 			commands/NAMES.cpp \
-			commands/KILL.cpp \
+			commands/DIE.cpp \
 			commands/TOPIC.cpp \
 			commands/KICK.cpp \
 			commands/OPER.cpp \

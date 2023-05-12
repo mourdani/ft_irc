@@ -29,7 +29,7 @@ std::vector<std::string>	split(std::string str, char delimiter);
 void handle_sigint(int sig);
 
 #define QUIT 2
-#define KILL 3
+#define DIE 3
 #define BAD_USER 4
 
 class Server;
@@ -76,7 +76,7 @@ public:
 	int	ping(User *user, std::vector<std::string> args);
 	int	names(User *user, std::vector<std::string> args);
 	int	oper(User *user, std::vector<std::string> args);
-	int	kill(User *user, std::vector<std::string> args);
+	int	die(User *user, std::vector<std::string> args);
 	int	topic(User *user, std::vector<std::string> args);
 	int	kick(User *user, std::vector<std::string> args);
 	int	pass(User *user, std::vector<std::string> args);
