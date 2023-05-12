@@ -20,7 +20,7 @@ int	Server::topic(User *user, std::vector<std::string> args)
 	}
 	if (!canal->getChanop() || *(canal->getChanop()) != *user)
 	{	
-		user->send_code(ERR_CHANOPRIVSNEEDED, args[1] + " :You're not channel operator");
+		user->send_code(ERR_CHANOPRIVSNEEDED, args[1] + " :You are not chanop");
 		user->send_code(RPL_TOPIC, args[1] + " " + canal->getTopic());
 		return 0;
 	}
