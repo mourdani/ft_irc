@@ -43,7 +43,7 @@ int	Server::privmsg(User *user, std::vector<std::string> args)
 				continue;
 		}
 		User	*dest_user = get_user(*dest);
-		if (dest_user)
+		if (dest_user && dest_user->isRegistered())
 			dest_user->send_msg(user->prefix() + " PRIVMSG " + *dest + message);
 		else
 			user->send_code(ERR_NOSUCHNICK, *dest + " :No such nick/channel");
