@@ -19,7 +19,11 @@ int	Server::topic(User *user, std::vector<std::string> args)
 		return (user->send_code(RPL_TOPIC, args[1] + " " + canal->getTopic()), 0);
 	}
 	if (!canal->getChanop() || *(canal->getChanop()) != *user)
-		return (user->send_code(ERR_CHANOPRIVSNEEDED, args[1] + " :You're not channel operator"), 0);
+	{	
+		user->send_code(ERR_CHANOPRIVSNEEDED, args[1] + " :You are not chanop");
+		user->send_code(RPL_TOPIC, args[1] + " " + canal->getTopic());
+		return 0;
+	}
 	std::string	topic = "";
 	for (unsigned int i = 2; i < args.size(); i++)
 	{

@@ -14,11 +14,6 @@ int	message_canal(Server *server, User *user, std::string dest, std::string mess
 		std::map<int, User *>	users = canal->getUsers();
 		std::map<int, User *>::iterator	it;
 		canal->broadcast(user, "PRIVMSG " + dest + message, 1);
-		for (it = users.begin(); it != users.end(); it++)
-		{
-			if (it->second != user)
-				it->second->send_msg(message);
-		}
 		return 0;
 	}
 	return 1;
@@ -42,7 +37,7 @@ int	Server::privmsg(User *user, std::vector<std::string> args)
 	}
 	for (std::vector<std::string>::iterator dest = destinations.begin(); dest != destinations.end(); dest++)
 	{
-		if ((*dest)[0] == '#')
+		if ((*dest)[0] == '#') 
 		{
 			if (message_canal(this, user, *dest, message) == 0)
 				continue;
