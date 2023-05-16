@@ -28,6 +28,8 @@ int	Server::names(User *user, std::vector<std::string> args){
 	std::map<int, User *>::iterator it2 = users.begin();
 	while (it2 != users.end())
 	{
+		if (*(it2->second) == *(canal->getChanop()))
+			names+= "@";
 		names += it2->second->getNickname() + " ";
 		it2++;
 	}
