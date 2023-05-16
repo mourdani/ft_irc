@@ -15,7 +15,6 @@ Server::Server(int port, std::string password) : port(port), _password(password)
     int status = getaddrinfo(NULL, port_str.c_str(), &hints, &socket_info);
     if (status != 0) {
         std::cerr << "getaddrinfo error!" << std::endl;
-        //return 1;
         exit(1);
     }
 
@@ -29,15 +28,14 @@ Server::Server(int port, std::string password) : port(port), _password(password)
         int yes = 1;
         if (setsockopt(this->socketfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) == -1) {
             std::cerr << "setsockopt error!" << std::endl;
-            //return 1;
-            exit(1);
+            freeaddrinfo(socket_info);
+            exit(1); 
         }
 
         if (bind(this->socketfd, p->ai_addr, p->ai_addrlen) == -1) {
             close(this->socketfd);
             continue;
         }
-
         break;
     }
     freeaddrinfo(socket_info);
@@ -46,14 +44,11 @@ Server::Server(int port, std::string password) : port(port), _password(password)
         std::cerr << RED << "Could not bind to port [" << get_port() << "] address already in use" << std::endl;
         std::cerr << "Use another port or wait for the port to close correctly." << std::endl;
         std::cerr << "To check port state:  netstat -an | grep " << get_port() << RESET << std::endl;
-        freeaddrinfo(socket_info);
-        //return 1;
-        exit(1);
+        exit(1); // secured
     }
 
-    if (listen(this->socketfd, MAX_CLIENTS) == -1) {
+    if (listen(this->socketfd, MAX_CLIENTS) == -1) { 
         std::cerr << "listen error!" << std::endl;
-        //return 1;
         exit(1);
     }
 
