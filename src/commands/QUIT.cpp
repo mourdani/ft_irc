@@ -7,10 +7,6 @@ int	Server::quit(User *user, std::vector<std::string> args)
 	_user_ids.erase(user->getNickname());
 	users.erase(user->getFd());
 	broadcast(user, "QUIT");
-	// for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); it++)
-	// {
-	// 	it->second->send_msg(":" + user->getNickname() + " QUIT");
-	// }
 	for (std::map<std::string, Canal *>::iterator it = canals.begin(); it != canals.end(); it++)
 	{
 		it->second->removeUser(*user);

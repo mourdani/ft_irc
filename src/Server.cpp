@@ -122,6 +122,10 @@ int Server::run() {
                 if (len == 0) {
                     std::cout << "Client " << i << " disconnected" << std::endl;
                     close(fds[i].fd);
+					User	*user = get_user(fds[i].fd);
+					std::vector<std::string>	args;
+					if (user)
+						quit(user, args);
                     fds[i].fd = -1;
                     continue;
                 }
