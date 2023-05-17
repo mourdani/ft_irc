@@ -11,14 +11,6 @@ void handle_sigint(int sig) {
     server_ptr->~Server();
     std::cout << std::endl << "Server closed" << std::endl;
     exit(0);
-
-}
-
-
-int exit_error(std::string error)
-{
-    std::cerr << error << std::endl;
-    return (1);
 }
 
 int	launch_server(int port, char *pw)
@@ -32,18 +24,24 @@ int	launch_server(int port, char *pw)
 }
 
 int main(int ac, char **av) {
+    try {
     if (ac != 3)
-        return exit_error("Usage : ircserv <port> <password>");
-
+	throw "Usage: ./server <port> <password>";
 
     std::string port_str = av[1];
-
     if (port_str.find_first_not_of("0123456798") != std::string::npos)
-        return exit_error("Error : port incorect");
+	throw "Error : port incorect";
 
     int port = atoi(av[1]);
-	if (port < 1024 || port > 65535)
-		return exit_error("Error : port outside [1024, 65535]");
+    if (port < 1024 || port > 65535)
+        throw "Error : port outside [1024, 65535]";
 
-    return launch_server(port, av[2]);
+    launch_server(port, av[2]);
+    }
+
+    catch (const char *e) {
+	std::cerr << e << std::endl;
+	return (1);
+    }
+    return 0;
 }

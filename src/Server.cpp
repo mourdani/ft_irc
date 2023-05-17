@@ -14,22 +14,21 @@ Server::Server(int port, std::string password) : port(port), _password(password)
 
     int status = getaddrinfo(NULL, port_str.c_str(), &hints, &socket_info);
     if (status != 0) {
-        std::cerr << "getaddrinfo error!" << std::endl;
-        exit(1);
+        std::cerr << "getaddrinfo error: " << gai_strerror(status) << std::endl;
+        throw "getaddrinfo error!";
     }
 
     struct addrinfo *p;
-    for (p = socket_info; p != NULL; p = p->ai_next) {
-        this->socketfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+    for (p = socket_info; p != NULL; p = p->ai_next) { 
+        this->socketfd = socket(p->ai_family, p->ai_socktype|SOCK_NONBLOCK, p->ai_protocol);
         if (this->socketfd == -1) {
             continue;
         }
 
         int yes = 1;
         if (setsockopt(this->socketfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) == -1) {
-            std::cerr << "setsockopt error!" << std::endl;
             freeaddrinfo(socket_info);
-            exit(1); 
+            throw "setsockopt error!";
         }
 
         if (bind(this->socketfd, p->ai_addr, p->ai_addrlen) == -1) {
@@ -41,15 +40,11 @@ Server::Server(int port, std::string password) : port(port), _password(password)
     freeaddrinfo(socket_info);
 
     if (p == NULL) {
-        std::cerr << RED << "Could not bind to port [" << get_port() << "] address already in use" << std::endl;
-        std::cerr << "Use another port or wait for the port to close correctly." << std::endl;
-        std::cerr << "To check port state:  netstat -an | grep " << get_port() << RESET << std::endl;
-        exit(1); // secured
+        throw "Failed to bind socket!";
     }
 
     if (listen(this->socketfd, MAX_CLIENTS) == -1) { 
-        std::cerr << "listen error!" << std::endl;
-        exit(1);
+        throw "listen error!";
     }
 
     std::cout << "Server listening on port " << GREEN << port << RESET << std::endl;
@@ -78,8 +73,6 @@ int Server::run() {
     int timeout = 1000;
 
 
-   // Canal *general = new Canal("#general");
-   // add_canal(general);
     fds[0].fd = this->socketfd;
     fds[0].events = POLLIN;
     while (1) {
