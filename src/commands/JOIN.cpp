@@ -12,6 +12,12 @@ int	Server::join(User *user, std::vector<std::string> args)
 		user->send_code(ERR_NEEDMOREPARAMS, ":Usage: /JOIN <channel> *( \",\" <channel> )");
 		return 1;
 	}
+	// if user is *
+	if (user->getNickname() == "*" || user->getUsername() == "")
+	{
+		user->send_code(ERR_NOTREGISTERED, ":You didnt set your nickname/username yet");
+		return 1;
+	}
 	channels = split(args[1], ',');
 	for (std::vector<std::string>::iterator name = channels.begin(); name != channels.end(); name ++)
 	{
