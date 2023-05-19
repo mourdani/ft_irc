@@ -3,20 +3,14 @@
 int Server::user(User *user, std::vector<std::string> args)
 {
 	if (user->getUsername().compare(""))
+	{
+		user->send_code(ERR_ALREADYREGISTRED, ":You may not reregister");
 		return 0;
+	}
 	if (args.size() < 2)
 	{
 		user->send_code(ERR_NEEDMOREPARAMS, ":Usage: /USER <user>");
 		return 0;
-	}
-	for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); it++)
-	{
-		if (it->second->getUsername().compare(args[1]) == 0)
-		{
-			user->send_code(ERR_ALREADYREGISTRED, args[1] + " :Unauthorized command (already registered)");
-			quit(user, args);
-			return BAD_USER;
-		}
 	}
 	user->setUsername(args[1]);
 	return 0;

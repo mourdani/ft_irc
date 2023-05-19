@@ -37,6 +37,5 @@ int	Server::part(User *user, std::vector<std::string> args)
 		canal->broadcast(user, "PART " + *it + message);
 		canal->removeUser(*user);
 	}
-
 	return 0;
 }

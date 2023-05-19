@@ -7,6 +7,11 @@ int	Server::pass(User *user, std::vector<std::string> args)
 		user->send_code(ERR_NEEDMOREPARAMS, ":PASS :Not enough parameters.");
 		return 1;
 	}
+	if (user->isRegistered())
+	{
+		user->send_code(ERR_ALREADYREGISTRED, ":You may not reregister");
+		return 1;
+	}
 	if (user->getPass() == "" || user->getPass() != args[1])
 		user->setPass(args[1]);
 	if (get_password() == user->getPass())
