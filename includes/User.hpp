@@ -15,13 +15,13 @@ private:
     std::string _username;
     std::string _realname;
     std::string _hostname;
-	std::string _server_name;
+    std::string _server_name;
     bool _operator;
     std::string _pass;
     bool _registered;
     int fd;
-	std::list<std::string>	canals;
-	std::string	_command;
+    std::list<std::string>	canals;
+    std::string	_command;
 
 public:
     User();

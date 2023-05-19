@@ -14,7 +14,7 @@ Server::Server(int port, std::string password) : port(port), _password(password)
 
     int status = getaddrinfo(NULL, port_str.c_str(), &hints, &socket_info);
     if (status != 0) {
-        std::cerr << "getaddrinfo error: " << gai_strerror(status) << std::endl;
+        freeaddrinfo(socket_info);
         throw "getaddrinfo error!";
     }
 
