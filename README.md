@@ -1,7 +1,4 @@
 <p align="center">
-  <img src="https://img.icons8.com/external-tal-revivo-filled-tal-revivo/96/external-markdown-a-lightweight-markup-language-with-plain-text-formatting-syntax-logo-filled-tal-revivo.png" width="100" />
-</p>
-<p align="center">
     <h1 align="center">FT_IRC</h1>
 </p>
 <p align="center">
@@ -101,7 +98,7 @@ The ft_irc project is an IRC server-client communication system that facilitates
 | File                                                                        | Summary                                                                                                                                                                                                                                              |
 | ---                                                                         | ---                                                                                                                                                                                                                                                  |
 | [User.cpp](https://github.com/mourdani/ft_irc/blob/master/src/User.cpp)     | Code Summary: `src/User.cpp`**Manages user functionality in `ft_irc`, integrating with the server. Interaction handling and state management pivotal in IRC protocol implementation.                                                                 |
-| [Canal.cpp](https://github.com/mourdani/ft_irc/blob/master/src/Canal.cpp)   | Role:** `src/Canal.cpp` in `ft_irc` repo manages communication channels. Implements channel functionality like joining, leaving, and sending messages. Vital for server-client messaging system.                                                     |
+| [Canal.cpp](https://github.com/mourdani/ft_irc/blob/master/src/Canal.cpp)   | `src/Canal.cpp` in `ft_irc` repo manages communication channels. Implements channel functionality like joining, leaving, and sending messages. Vital for server-client messaging system.                                                     |
 | [main.cpp](https://github.com/mourdani/ft_irc/blob/master/src/main.cpp)     | Code Summary:**Maintains server instance & handles startup. Relies on Server class for IRC server functionality. Critical for initializing server operations & coordinating client interactions. Facilitates reliable & efficient server management. |
 | [Server.cpp](https://github.com/mourdani/ft_irc/blob/master/src/Server.cpp) | Code Summary:** `Server.cpp` manages server functionality, utilizing `Server.hpp`. Key features involve server operations coordination within the `ft_irc` architecture.                                                                             |
 
@@ -153,6 +150,11 @@ cd ft_irc
 g++ -o myapp main.cpp
 ```
 
+4. Run the server
+```sh
+./ft_irc <port>
+```
+5. Connect to the server using an IRC client
 
 [**Return**](#-quick-links)
 
